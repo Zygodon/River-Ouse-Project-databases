@@ -35,3 +35,15 @@ Guest access to the database can be obtained here:
 
 Log in as "guest" with password "guest".
 ![FigName](phpMyAdmin.png)
+
+Select the meadows database. Data may be retrieved using simple SQL searches:
+
+```{r}
+library("RMySQL")
+mydb = dbConnect(MySQL(), user='guest', password = 'guest', dbname='meadows', port = 3306, host='sxouse.ddns.net')
+rs1 = dbSendQuery(mydb, "select assembly_name, nvc from assemblies where nvc is not null;")
+data <- fetch(rs1, n=10)
+dbDisconnect(mydb)
+print(data)
+```
+
