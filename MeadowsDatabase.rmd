@@ -11,7 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## The River Ouse Project
+## The River Ouse Project.
 
 The River Ouse Project was started by Dr Margaret Pilkington and colleagues in the Centre for Continuing Education, University of Sussex. Margaret is now retired with emeritus status and continues to run the project with a team of volunteers, in association with the University of Sussex.
 
@@ -19,9 +19,19 @@ The team does botanical surveys of streamside grassland and steep wooded valleys
 
 The objective of this project is to make the databases publicly available, and to develop resources to make commonly needed derived quantities such as species frequencies readily accessible.
 
-## The meadows database
+## The meadows database.
 
 <center>
 ![FigName](meadows_db.png)
 </center>
+Figure 1. Meadows database schematic.
 
+In this diagram, the tables joined by constraint links represent the core of the meadows database. The two stand-alone tables do not contain survey data but may be used as ancillary reference (they contain data from the NVC tables). Access to the survey data is by SQL query into the constraint-linked tables. 
+
+## Database access.
+
+Guest access to the database can be obtained here:
+<http://sxouse.ddns.net:82/phpmyadmin/>
+
+Log in as "guest" with password "guest".
+![FigName](phpMyAdmin.png)
