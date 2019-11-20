@@ -76,6 +76,17 @@ Single tables can be imported into Excel using the MySQL for Excel add-in, use t
 
 ## Tables.
 
-### records.
+### Records.
+The records table records all the entries that the surveyors made on the recording sheets. Essentially, it records that a particular species(identified by species_id) was present in a particular quadrat (quadrat_id) with a particular domin value (abundance). Every record has a unique record_id.
 
-The records table records all the entries that the surveyors made on the recording sheets.
+### Species.
+The species table is a list of all the plant species found during the course of the project. The species names are those used in the NVC tables, and are not completely up to date. We retain them in this long-running project for the sake of continuity and compatibility with reprts completed earlier. We intend to maintain the synonym field to record updated species names. Species names are given in full (genus and species) without abbreviation, and with an underscore between the generic and the specific name, for ease of digital import.
+
+You can find which species in recorded by a particular record with something like: SELECT species_name FROM species JOIN records ON records.species_id = species.species_id WHERE records_id = 229;
+
+If you wanted to.
+
+### Quadrats.
+The sampling unit for the project is a quadrat. Quadrats belong to assemblies (see next paragraph for a definition), identified by an assembly_id which points to the assembly to which the quadrat belongs. Every quadrat has a unique quadrat_id that can be used to find the records belonging to it, that is, the plants found in that quadrat. 
+
+You could find which plant species were found in a particular quadrat with something like:
