@@ -5,6 +5,7 @@ date: "19/11/2019"
 output: 
   html_document: 
     keep_md: yes
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -26,9 +27,11 @@ The objective of this project is to make the databases publicly available, and t
 </center>
 Figure 1. Meadows database schematic.
 
-In this diagram, the tables joined by constraint links represent the core of the meadows database. The two stand-alone tables do not contain survey data but may be used as ancillary reference (they contain data from the NVC tables). Access to the survey data is by SQL query into the constraint-linked tables. 
+In this diagram, the tables joined by constraint links contain the survey data. The two stand-alone tables contain data from the NVC standards and may be used as ancillary reference. 
 
 ## Database access.
+
+Public users may log into the database with user name "guest", using password "guest". Guest users can access all the tables except those outlined in red in the diagram. The fields outlined in yellow are not publicly available.
 
 Guest access to the database can be obtained here:
 <http://sxouse.ddns.net:82/phpmyadmin/>
@@ -36,7 +39,9 @@ Guest access to the database can be obtained here:
 Log in as "guest" with password "guest".
 ![FigName](phpMyAdmin.png)
 
-Select the meadows database. Data may be retrieved using simple SQL searches:
+Select the meadows database. Data may be retrieved using SQL searches.
+
+The database can also be accessed from R or other programming language. You can use a simple query:
 
 ```{r}
 library("RMySQL")
@@ -67,4 +72,10 @@ dbDisconnect(mydb)
 print(data)
 ```
 
-If working in phpMyAdmin as described above, you would just enter the query at the command line.
+Single tables can be imported into Excel using the MySQL for Excel add-in, use the information shown in the code snippets to create a connection.
+
+## Tables.
+
+### records.
+
+The records table records all the entries that the surveyors made on the recording sheets.
