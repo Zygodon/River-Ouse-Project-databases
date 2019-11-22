@@ -4,26 +4,23 @@ author: "John Pilkington"
 date: "19/11/2019"
 output: 
   html_document: 
-    fig_caption: yes
     keep_md: yes
     toc: yes
 ---
 
 
-<<<<<<< HEAD
-=======
 
 ## The River Ouse Project.
 
 The River Ouse Project was started by Dr Margaret Pilkington and colleagues in the Centre for Continuing Education, University of Sussex. Margaret is now retired with emeritus status and continues to run the project with a team of volunteers, in association with the University of Sussex.
 >>>>>>> 26d4ff57c18e7037d3f2e78aca5c90b466962a7d
 
-## The River Ouse Project.
-
 The River Ouse Project was started by Dr Margaret Pilkington and colleagues in the Centre for Continuing Education, University of Sussex. Margaret is now retired with emeritus status and continues to run the project with a team of volunteers, in association with the University of Sussex.
 <center>
-![Figure 1, Study area. Green: meadows. Brown: gills.](study area for git.png)
-<center>
+![](study area for git.png)
+Figure 1, Study area. Green: meadows. Brown: gills.
+
+</center>
 The team does botanical surveys of streamside grassland and steep wooded valleys (gills) in the upper reaches of the Sussex Ouse, a short flashy river arising on the southern slopes of the Ashdown Forest, part of the High Weald AONB. Survey sites are chosen on the basis of species richness, potential for restoration and contribution to flood control, and surveyed using the sampling methods outlined in Rodwell, J S (1992. British Plant Communities, Volume 3, Grasslands and Montane Communities). Survey data are transferred from the paper record taken in the field to Excel spreadsheets, and from there after validation and cleaning into two MySQL (MariaDB) databases, meadows and gills.
 
 The objective of this project is to make the databases publicly available, and to develop resources to make commonly needed derived quantities such as species frequencies readily accessible.
@@ -31,9 +28,9 @@ The objective of this project is to make the databases publicly available, and t
 ## The meadows database.
 
 <center>
-![FigName](meadows_db.png)
+![](meadows_db.png)
 </center>
-Figure 1. Meadows database schematic.
+Figure 2. Meadows database schematic.
 
 In this diagram, the tables joined by constraint links contain the survey data. The two stand-alone tables contain data from the NVC standards and may be used as ancillary reference. 
 
@@ -147,28 +144,18 @@ Single tables can be imported into Excel using the MySQL for Excel add-in, use t
 The records table records all the entries that the surveyors made on the recording sheets. Essentially, it records that a particular species(identified by species_id) was present in a particular quadrat (quadrat_id) with a particular domin value (abundance). Every record has a unique record_id.
 
 ### Species.
-<<<<<<< HEAD
 The species table is a list of all the plant species found during the course of the project. The species names are those used in the NVC tables. We retain them in this long-running project for the sake of continuity and compatibility with reports completed earlier. The synonym field contains the more recent names (Stace), and formal common names are included in the english-names field. Species names are given in full (genus and species) without abbreviation, and with an underscore between the generic and the specific name, for ease of digital import. There is one anomalous species name, "Agrostis_capillaris_stolonifera". A. capillaris and A. stolonifera are readily distinguished when flowers are available, but can be indistinguishable on vegetative characteristics. Surveys often take place out of the flowering season so for the time being we treat all the records as unreliable (and tend to exclude A. capillaris_stolonifera from our analyses). This policy may be reviewed in future.
 
 You can find which species is recorded in a particular record (e.g. 229) with something like: 
 
 SELECT species_name FROM species JOIN records ON records.species_id = species.species_id WHERE records_id = 229;
-=======
-The species table is a list of all the plant species found during the course of the project. The species names are those used in the NVC tables, and are not completely up to date. We retain them in this long-running project for the sake of continuity and compatibility with reports completed earlier. We intend to maintain the synonym field to record updated species names. Species names are given in full (genus and species) without abbreviation, and with an underscore between the generic and the specific name, for ease of digital import. There is one anomalous species name, "Agrostis_capillaris_stolonifera". A. capillaris and A. stolonifers are readily distinguished when flowers are available, but can be indistinguishable on vegetative characteristics. Surveys often take place out of the flowering season so for the time being we treat all the records as unreliable (and tend to exclude A. capillaris_stolonifera from our analyses). This policy may be reviewed in future.
-
-You can find which species in recorded by a particular record with something like: SELECT species_name FROM species JOIN records ON records.species_id = species.species_id WHERE records_id = 229;
->>>>>>> 26d4ff57c18e7037d3f2e78aca5c90b466962a7d
 
 If you wanted to.
 
 ### Quadrats.
 The sampling unit for the project is a quadrat. Quadrats belong to assemblies (see next paragraph for a definition), identified by an assembly_id which points to the assembly to which the quadrat belongs. Every quadrat has a unique quadrat_id that can be used to find the records belonging to it, that is, the plants found in that quadrat. 
 
-<<<<<<< HEAD
 You could find which plant species were found in a particular quadrat (e.g. 1751) with something like:
-=======
-You could find which plant species were found in a particular quadrat with something like:
->>>>>>> 26d4ff57c18e7037d3f2e78aca5c90b466962a7d
 
 SELECT DISTINCT (species_name) FROM species 
   JOIN records ON records.species_id = species.species_id
@@ -178,11 +165,7 @@ WHERE quadrats_id = 1751;
 ### Assemblies.
 Assemblies are the vegetative units that we sample. Sites and meadows (not available to "guest") record the location of our samples, but often it is found that one meadow may have several recognisable vegetative units in it. The constraint link between the sites and meadows tables in Figure 1 show this one-to-many relationship. Quadrats need to know which assembly they belong to, so the quadrats table entries each have an assembly_id which can be used to join the assemblies and quadrats tables on assemblies_id = assembly_id. Note the naming convention here, which we adhere to throughout: Parent items (assemblies) have a (plural) assemblies_id; child items (quadrats) have a (singular) assembly_id because each belongs to just one assembly.
 
-<<<<<<< HEAD
 The assemblies table also records the quadrat count for the assembly, and the size of quadrat used to sample it. We use either 2mx2m or 4mx4m quadrats.
-=======
-The assemblies table also records the quadrat count for the assembly, and the size of quadrat used to sample it. We use either 2mx2m quadrats or 4mx4m.
->>>>>>> 26d4ff57c18e7037d3f2e78aca5c90b466962a7d
 
 For each assembly, the team assign an NVC class by matching the NVC standards using MATCH software together with an understanding of general grassland ecology. The assessed NVC class is listed in the nvc column, and the top-level NVC community is in major_nvc_community.
 
@@ -190,4 +173,4 @@ For each assembly, the team assign an NVC class by matching the NVC standards us
 This table contains mesotrophic grassland species frequencies listed in British Plant Communities vol 3, Grasslands and Montane Communities.
 
 ### mg_stds_v.
-For some of our analyses we use a subset of 22 species selected because each has a high frequency in the NVC standards in at least one if the mesotrophic grassland communities encountered in the project. The table is included here to make it easier for users to replcate our results if required.
+For some analyses (specifically, the 2019 BES poster) we used a set of 22 species selected because each occurred with a frequency of V (0.8 - 1.0, mid-range 0.8) in at least one of the mesotrophic grassland standards of interest. The mg_stds_v table lists them.
