@@ -13,7 +13,6 @@ output:
 ## The River Ouse Project.
 
 The River Ouse Project was started by Dr Margaret Pilkington and colleagues in the Centre for Continuing Education, University of Sussex. Margaret is now retired with emeritus status and continues to run the project with a team of volunteers, in association with the University of Sussex.
->>>>>>> 26d4ff57c18e7037d3f2e78aca5c90b466962a7d
 
 The River Ouse Project was started by Dr Margaret Pilkington and colleagues in the Centre for Continuing Education, University of Sussex. Margaret is now retired with emeritus status and continues to run the project with a team of volunteers, in association with the University of Sussex.
 <center>
@@ -95,14 +94,14 @@ Or more complicated joins:
 
 ```r
 library("RMySQL")
-q <- "select assembly_name, nvc, count(species.species_id)
+q <- "select assembly_name, nvc, count(distinct(species.species_id))
 from assemblies
 join quadrats on quadrats.assembly_id = assemblies_id
 join records on records.quadrat_id = quadrats_id
 join species on species.species_id = records.species_id
 where nvc in ('MG5a', 'MG5c', 'MG6a', 'MG6b')
-and species.species_name = 'Lolium_perenne'
-group by assemblies_id, species_name;" 
+# and species.species_name = 'Lolium_perenne'
+group by assemblies_id;" 
 
 mydb = dbConnect(MySQL(), user='guest', password = 'guest', dbname='meadows', port = 3306, host='sxouse.ddns.net')
 rs1 = dbSendQuery(mydb, q)
@@ -123,17 +122,17 @@ print(data)
 ```
 
 ```
-##          assembly_name  nvc count(species.species_id)
-## 1             Baybrook MG5a                         2
-## 2    Little_field_east MG6b                         1
-## 3             Clayland MG5a                         1
-## 4         Horse_brooks MG6a                         5
-## 5            Four_acre MG5a                         2
-## 6             Inafield MG5a                         9
-## 7         Middle_field MG5a                         8
-## 8  Lower_eastlands_dry MG5c                         3
-## 9        Spring_meadow MG6b                         6
-## 10        Cross_meadow MG6b                         4
+##          assembly_name  nvc count(distinct(species.species_id))
+## 1             Baybrook MG5a                                  37
+## 2    Little_field_east MG6b                                  29
+## 3             Clayland MG5a                                  34
+## 4         Horse_brooks MG6a                                  27
+## 5            Four_acre MG5a                                  31
+## 6             Inafield MG5a                                  32
+## 7         Middle_field MG5a                                  37
+## 8  Lower_eastlands_dry MG5c                                  43
+## 9        Spring_meadow MG6b                                  31
+## 10        Cross_meadow MG6b                                  32
 ```
 
 Single tables can be imported into Excel using the MySQL for Excel add-in, use the information shown in the code snippets to create a connection.

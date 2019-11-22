@@ -15,7 +15,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ## The River Ouse Project.
 
 The River Ouse Project was started by Dr Margaret Pilkington and colleagues in the Centre for Continuing Education, University of Sussex. Margaret is now retired with emeritus status and continues to run the project with a team of volunteers, in association with the University of Sussex.
->>>>>>> 26d4ff57c18e7037d3f2e78aca5c90b466962a7d
 
 The River Ouse Project was started by Dr Margaret Pilkington and colleagues in the Centre for Continuing Education, University of Sussex. Margaret is now retired with emeritus status and continues to run the project with a team of volunteers, in association with the University of Sussex.
 <center>
@@ -63,14 +62,14 @@ Or more complicated joins:
 
 ```{r}
 library("RMySQL")
-q <- "select assembly_name, nvc, count(species.species_id)
+q <- "select assembly_name, nvc, count(distinct(species.species_id))
 from assemblies
 join quadrats on quadrats.assembly_id = assemblies_id
 join records on records.quadrat_id = quadrats_id
 join species on species.species_id = records.species_id
 where nvc in ('MG5a', 'MG5c', 'MG6a', 'MG6b')
-and species.species_name = 'Lolium_perenne'
-group by assemblies_id, species_name;" 
+# and species.species_name = 'Lolium_perenne'
+group by assemblies_id;" 
 
 mydb = dbConnect(MySQL(), user='guest', password = 'guest', dbname='meadows', port = 3306, host='sxouse.ddns.net')
 rs1 = dbSendQuery(mydb, q)
