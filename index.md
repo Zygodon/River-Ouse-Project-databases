@@ -14,7 +14,7 @@ output:
 
 The [River Ouse Project](http://www.sussex.ac.uk/riverouse/) was started by Dr Margaret Pilkington and colleagues in the Centre for Continuing Education, University of Sussex. Margaret is now retired with emeritus status and continues to run the project with a team of volunteers, in association with the University of Sussex.
 <center>
-![](survey_sites.png)
+![](survey_sites2.png)
 Figure 1, Survey sites; green points: meadows; brown points: gills.
 
 </center>
@@ -46,21 +46,10 @@ The database can also be accessed from R or other programming language. You can 
 
 ```r
 library("RMySQL")
-```
-
-```
-## Loading required package: DBI
-```
-
-```r
 mydb = dbConnect(MySQL(), user='guest', password = 'guest', dbname='meadows', port = 3306, host='sxouse.ddns.net')
 rs1 = dbSendQuery(mydb, "select assembly_name, nvc from assemblies where nvc is not null;")
 data <- fetch(rs1, n=10)
 dbDisconnect(mydb)
-```
-
-```
-## Warning: Closing open result sets
 ```
 
 ```
