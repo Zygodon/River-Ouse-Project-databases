@@ -37,7 +37,8 @@ Guest access to the database can be obtained here:
 <http://sxouse.ddns.net:82/phpmyadmin/>
 
 Log in as "guest" with password "guest".
-![FigName](phpMyAdmin.png)
+
+<img src="phpMyAdmin.png" width="300px" />
 
 Select the meadows database. Data may be retrieved using SQL searches.
 
