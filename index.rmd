@@ -27,15 +27,13 @@ The objective of this project is to make the databases publicly available, and t
 ## The meadows database.
 
 <center>
-![](meadows_db.png)
+![](meadows_db2.png)
 </center>
-Figure 2. Meadows database schematic.
-
-In this diagram, the tables joined by constraint links contain the survey data. The two stand-alone tables contain data from the NVC standards and may be used as ancillary reference. 
+Figure 2. Meadows database schematic. The tables joined by constraint links contain the survey data. The two stand-alone tables contain data from the NVC standards and may be used as ancillary reference. 
 
 ## Database access.
 
-Public users may log into the database with user name "guest", using password "guest". Guest users can access all the tables except those outlined in red in the diagram. The fields outlined in yellow are not publicly available.
+Public users may log into the database with user name "guest", using password "guest".
 
 Guest access to the database can be obtained here:
 <http://sxouse.ddns.net:82/phpmyadmin/>
