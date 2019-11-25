@@ -31,6 +31,7 @@ Figure 2. Meadows database schematic. The tables joined by constraint links cont
 
 ## Database access.
 
+### phpMyAdmin.
 Public users may log into the database with user name "guest", using password "guest".
 
 Guest access to the database can be obtained here:
@@ -42,6 +43,7 @@ Log in as "guest" with password "guest".
 
 Select the meadows database. Data may be retrieved using SQL searches.
 
+### Access from R.
 The database can also be accessed from R or other programming language. You can use a simple query:
 
 
@@ -120,8 +122,12 @@ print(data)
 ## 9        Spring_meadow MG6b                                  31
 ## 10        Cross_meadow MG6b                                  32
 ```
-
+### Access from spreadsheet.
 Single tables can be imported into Excel using the MySQL for Excel add-in, use the information shown in the code snippets to create a connection.
+
+### Access from Shiny App.
+The on-line app calculates species frequencies and counts by community or assembly. It's under development, more functionality to be added.
+[Click here to run it](https://sussexouse.shinyapps.io/meadows_db/)
 
 ## Tables.
 
