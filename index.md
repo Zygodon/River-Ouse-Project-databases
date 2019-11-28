@@ -14,7 +14,7 @@ output:
 
 The [River Ouse Project](http://www.sussex.ac.uk/riverouse/) was started by Dr Margaret Pilkington and colleagues in the Centre for Continuing Education, University of Sussex. Margaret is now retired with emeritus status and continues to run the project with a team of volunteers, in association with the University of Sussex.
 <center>
-![](survey_sites2.png)
+![](images/survey_sites2.png)
 Figure 1, Survey sites; green points: meadows; brown points: gills.
 
 </center>
@@ -25,7 +25,7 @@ The objective of this project is to make the databases publicly available, and t
 ## The meadows database.
 
 <center>
-![](meadows_db2.png)
+![](images/meadows_db2.png)
 </center>
 Figure 2. Meadows database schematic. The tables joined by constraint links contain the survey data. The two stand-alone tables contain data from the NVC standards and may be used as ancillary reference. 
 
@@ -39,7 +39,7 @@ Guest access to the database can be obtained here:
 
 Log in as "guest" with password "guest".
 
-<img src="phpMyAdmin.png" width="300px" />
+<img src="images/phpMyAdmin.png" width="300px" />
 
 Select the meadows database. Data may be retrieved using SQL searches.
 
@@ -167,7 +167,7 @@ This table contains mesotrophic grassland species frequencies listed in British 
 For some analyses (specifically, the 2019 BES poster) we used a set of 22 species selected because each occurred with a frequency of V (0.8 - 1.0, mid-range 0.8) in at least one of the mesotrophic grassland standards of interest. The mg_stds_v table lists them.
 
 ## How the downloads could be used: examples.
-[here](https://zygodon.github.io/meadows_db/Notebook.nb.html)
+Some examples with R code available [here](Notebook.nb.html)
 
 ## Please acknowlege us.
 The material on these pages and the data available to user "guest" are covered by the [GNU General Public License](LICENSE.txt). If you use our data in your teaching or research, please acknowlege that by citing the River Ouse Project, University of Sussex, and referring to our website, [www.sussex.ac.uk/riverouse/](http://www.sussex.ac.uk/riverouse/).
