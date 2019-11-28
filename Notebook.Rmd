@@ -4,7 +4,6 @@ output: html_notebook
 ---
 # Examples of data analysis using extracts from the meadows database.
 Specifically, using the data that can be downloaded in .csv format [from the app](https://sussexouse.shinyapps.io/meadows_db/). View the code here:
-
 ```{r setup, echo=TRUE, warning=FALSE, message=FALSE}
 # Libraries
 library("RMySQL")
