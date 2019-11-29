@@ -1,4 +1,4 @@
-# Get quadrat-based species frequencies for assemblies, on selected species and communities
+# Get quadrat-based species frequencies for assemblies.
 # Libraries
 library("RMySQL")
 library(tidyverse)
@@ -13,7 +13,7 @@ dbDisconnectAll <- function(){
 GetTheData <-  function()
 {
   # GET DATA FROM DB
-  # Remote DB with password - works Ok but table mg_standards6 is not available on PI. Should update.
+  # Remote DB with password
   con <- dbConnect(MySQL(), 
                    user  = "guest",
                    password    = "guest",
@@ -40,33 +40,29 @@ GetTheData <-  function()
 }
 
 ############## MAIN ##############
-# Define species to use
-spp <- c(168, 35, 36, 182, 43, 188, 44, 58, 195, 84, 88, 89, 208, 139, 148, 346)
 
 the_data <- GetTheData()
-d <- (the_data %>% select(assembly_id, nvc, species_id, species_name)
-      # %>% filter(nvc %in% c("MG5a", "MG5c"))
-      # %>% filter(species_id %in% spp)
-      )
-
+d <- the_data %>% select(assembly_id, species_id, species_name)
+# Hits for each species in each assembly
 species_hits <- (d %>% group_by(assembly_id, species_name) 
                   %>% summarise(hits = n()))
-
+# Trials (quadrats) - quadrat count for each assembly (is indepenedent of species!)
 t <- (the_data %>% select(assembly_id, quadrat_id)
            %>% group_by(assembly_id)
            %>% summarise(trials = n_distinct(quadrat_id)))
-
+# Frequency of each species in each assembly, hits/trials
 species_freq <- (left_join(species_hits, t, by = "assembly_id")
                 %>% mutate(freq = hits/trials)
-                %>% mutate(freq = sprintf("%0.2f", freq)))
-
+                %>% mutate(CrI5 = qbeta(0.05, hits+1, 1+trials-hits))
+                %>% mutate(median = qbeta(0.5, hits+1, 1+trials-hits)) # For comparison with frequency as hits/trials
+                %>% mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
+# Include community
 nvcs <- the_data %>% select(assembly_id, nvc) %>% distinct()
-data <- (left_join(species_freq, nvcs, by = "assembly_id") 
-         %>% select(assembly_id, nvc, species_name, hits, trials, freq))
+data <- left_join(species_freq, nvcs, by = "assembly_id") 
+# Include assembly_name
+assemblies <- the_data %>%  select(assembly_id, assembly_name) %>% distinct()
+data <- (left_join(data, assemblies, by = "assembly_id")
+          %>% select(assembly_id, assembly_name, nvc, species_name, 
+              hits, trials, freq, CrI5, median, CrI95)) # reorder
 
-
-# data <- (left_join (species_freq, sites, by = c("assembly_id" = "assemblies_id"))
-#          %>% ungroup() 
-#          %>% select(site_name, meadow_name, assembly_name, nvc, species_name, hits, trials, freq))
-# 
-# write.csv(data, "MG5 data.csv")
+#write.csv(data, "data.csv")
