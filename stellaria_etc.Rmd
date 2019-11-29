@@ -41,7 +41,8 @@ SELECT Community, species_id, p_central FROM meadows.mg_rodwell where Community 
 Anyway, it seems quite possible to collect the p_central values for all species and plot against frequency by community
 
 ```{r}
-
+q <- "SELECT Community, species_id, p_central FROM meadows.mg_rodwell where Community like 'MG%';"
+std_freqs <- query(q)
 ```
 
 

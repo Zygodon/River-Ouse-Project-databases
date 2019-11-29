@@ -185,5 +185,5 @@ AssemblySpeciesCounts <- function(t_d) # the_data
 
 # General procedure for sending an SQL query
 
-q <- "SELECT Community, species_id, p_central FROM meadows.mg_rodwell where Community like 'MG%';"
-t <- query(q)
+# q <- "SELECT Community, species_id, p_central FROM meadows.mg_rodwell where Community like 'MG%';"
+# t <- query(q)
