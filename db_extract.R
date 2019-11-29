@@ -10,6 +10,7 @@ dbDisconnectAll <- function(){
   cat(sprintf("%s connection(s) closed.\n", ile))
 }
 
+# Load the database
 GetTheData <-  function()
 {
   # GET DATA FROM DB
@@ -39,6 +40,7 @@ GetTheData <-  function()
   dbDisconnectAll()
 }
 
+# Return species frequencies in the data, average and measures of spread
 GrossFrequency <- function(t_d) 
 {
   # Gross frequency for each species.
@@ -53,9 +55,9 @@ GrossFrequency <- function(t_d)
   )
 }
 
-FrequencyByCommunity <- function(t_d)
+# Return species frequencies by community, average and measures of spread
+FrequencyByCommunity <- function(t_d) # the_data
 {
-  # Species frequencies by community
   # Need trials for each community
   trials_by_community <- t_d %>% group_by(nvc) %>% summarise(trials = n_distinct(quadrat_id))
   # Need hits for each community and species
@@ -67,7 +69,7 @@ FrequencyByCommunity <- function(t_d)
                         %>%  mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
 }
 
-
+# Return species frequencies by assembly, average and measures of spread
 FrequencyByAssembly <- function(t_d)
 {
   d <- t_d %>% select(assembly_id, species_id, species_name)
@@ -117,14 +119,25 @@ FrequencyByAssembly <- function(t_d)
   return(data)
 }
 
-CommunitySpeciesCounts <- function(freq_by_community)
+# Return quadrat species count per community, average and measures of spread.
+CommunitySpeciesCounts <- function(t_d) # the_data
 {
-  #  Species counts by community
-  return(freq_by_community %>% group_by(nvc) %>% summarise(species_count = n_distinct(species_id)))
+  # 1. Species counts per quadrat
+  sp_cnt <- (t_d %>% select(quadrat_id, species_id)
+             %>% group_by(quadrat_id) %>% summarise(sp_count = n()))
+  # 2. Join communities, 
+  communities <- t_d %>% select(nvc, quadrat_id) %>% distinct()
+  d1 <- left_join(sp_cnt, communities, by = "quadrat_id")
+  # 3. Summarise - mean and measures of spread
+  data <- (d1 %>% group_by(nvc) 
+           %>% summarise(mean_species_count = mean(sp_count), sd = sd(sp_count), 
+                         CrI5 = quantile(sp_count, 0.05), median = median(sp_count), 
+                         CrI95 = quantile(sp_count, 0.95)))
+  return(data)
 }
 
-
-AssemblySpeciesCounts <- function(t_d)
+# Return quadrat species count per assembly, average and measures of spread
+AssemblySpeciesCounts <- function(t_d) # the_data
 {
   # 1. Species counts per quadrat
   sp_cnt <- (t_d %>% select(quadrat_id, species_id)
@@ -147,14 +160,11 @@ AssemblySpeciesCounts <- function(t_d)
 # Following useful for testing the functions. Comment out in general
 # GET DATA FROM DB
 the_data <- GetTheData()
-# 
-# # In Shiny: don't just pass the_data but pass a selection, e.g. community, year, species.
-# species_freq <-  GrossFrequency(the_data)
-# freq_by_community <- FrequencyByCommunity(the_data)
-# freq_by_assembly <- FrequencyByAssembly(the_data)
-# #  Species counts by community
-# community_species_counts <- CommunitySpeciesCounts(freq_by_community)
-# # and by assembly
-assembly_species_counts <- AssemblySpeciesCounts(the_data)
 
+# In Shiny: don't just pass the_data but pass a selection, e.g. community, year, species.
+species_freq <-  GrossFrequency(the_data)
+freq_by_community <- FrequencyByCommunity(the_data)
+freq_by_assembly <- FrequencyByAssembly(the_data)
+community_species_counts <- CommunitySpeciesCounts(the_data)
+assembly_species_counts <- AssemblySpeciesCounts(the_data)
 
