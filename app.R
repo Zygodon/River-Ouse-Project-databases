@@ -59,7 +59,7 @@ ui <- fluidPage(
 
 # Define server logic to display and download selected file ----
 server <- function(input, output) {
-    # the_data <- GetTheData()
+    the_data <- GetTheData()
     # Downloadable csv of all data ----
     output$downloadAll <- downloadHandler(
       filename = function() {
@@ -76,8 +76,8 @@ server <- function(input, output) {
         switch(input$dataset,
                "None" ={},
                "Gross species frequencies" = GrossFrequency(the_data),
-               "Species by community" = FrequencyByCommunity(the_data),
-               "Species byassembly" = FrequencyByAssembly(the_data),
+               "Species frequencies by community" = FrequencyByCommunity(the_data),
+               "Species frequencies by assembly" = FrequencyByAssembly(the_data),
                "Species counts by community" = CommunitySpeciesCounts(FrequencyByCommunity(the_data)),
                "Species counts by assembly" =  AssemblySpeciesCounts(FrequencyByAssembly(the_data)))     
     })

@@ -1,18 +1,3 @@
-#     db_extract.R extracts data from the River Ouse Project meadows database
-#     Copyright (C) 2019  J. B. Pilkington j.b.pilkington@gmail.com
-# 
-#     This program is free software: you can redistribute it and/or modify
-#     it under the terms of the GNU General Public License as published by
-#     the Free Software Foundation, either version 3 of the License, or
-#     (at your option) any later version.
-# 
-#     This program is distributed in the hope that it will be useful,
-#     but WITHOUT ANY WARRANTY; without even the implied warranty of
-#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#     GNU General Public License for more details.
-# 
-#     You should have received a copy of the GNU General Public License
-#     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Libraries
 library("RMySQL")
@@ -54,12 +39,12 @@ GetTheData <-  function()
   dbDisconnectAll()
 }
 
-GrossFrequency <- function(d) 
+GrossFrequency <- function(t_d) 
 {
   # Gross frequency for each species.
   # Need hits and trials (quadrats)
-  species_freq <- d %>% group_by(species_id, species_name) %>% summarise(hits = n())
-  trials <- n_distinct(d$quadrat_id)
+  species_freq <- t_d %>% group_by(species_id, species_name) %>% summarise(hits = n())
+  trials <- n_distinct(t_d$quadrat_id)
   return(species_freq %>% mutate(trials)
                    %>% mutate(freq = hits/trials)
                    %>%  mutate(CrI5 = qbeta(0.05, hits+1, 1+trials-hits))
@@ -68,13 +53,13 @@ GrossFrequency <- function(d)
   )
 }
 
-FrequencyByCommunity <- function(d)
+FrequencyByCommunity <- function(t_d)
 {
   # Species frequencies by community
   # Need trials for each community
-  trials_by_community <- d %>% group_by(nvc) %>% summarise(trials = n_distinct(quadrat_id))
+  trials_by_community <- t_d %>% group_by(nvc) %>% summarise(trials = n_distinct(quadrat_id))
   # Need hits for each community and species
-  hits_by_community <- d %>% group_by(nvc, species_name, species_id) %>% summarise(hits = n_distinct(records_id))
+  hits_by_community <- t_d %>% group_by(nvc, species_name, species_id) %>% summarise(hits = n_distinct(records_id))
   return(left_join(hits_by_community, trials_by_community, by = "nvc")
                         %>%  mutate(freq = hits/trials)
                         %>%  mutate(CrI5 = qbeta(0.05, hits+1, 1+trials-hits))
@@ -82,21 +67,54 @@ FrequencyByCommunity <- function(d)
                         %>%  mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
 }
 
-FrequencyByAssembly <- function(d)
+
+FrequencyByAssembly <- function(t_d)
 {
-  # Species frequencies by assembly
-  # Need trials for each assembly
-  trials_by_assembly <- the_data %>% group_by(assembly_id, assembly_name) %>% summarise(trials = n_distinct(quadrat_id))
-  # Need hits for each assembly and species
-  hits_by_assembly <- the_data %>% group_by(assembly_id, species_name, species_id) %>% summarise(hits = n_distinct(records_id))
-  freq_by_assembly <- (left_join(hits_by_assembly, trials_by_assembly, by = "assembly_id")
-                       %>%  mutate(freq = hits/trials)
-                       %>%  mutate(CrI5 = qbeta(0.05, hits+1, 1+trials-hits))
-                       %>%  mutate(median = qbeta(0.5, hits+1, 1+trials-hits)) # For comparison with frequency as hits/trials
-                       %>%  mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits))
-  )
-  # Reorder the columns to put assembly_name next to assembly_id
-  return(freq_by_assembly %>% select(assembly_id, assembly_name, species_id, species_name, hits, trials, freq, CrI5, median, CrI95))
+  d <- t_d %>% select(assembly_id, species_id, species_name)
+  # Hits for each species in each assembly
+  species_hits <- (d %>% group_by(assembly_id, species_name) 
+                   %>% summarise(hits = n()))
+  # Trials (quadrats) - quadrat count for each assembly (is indepenedent of species!)
+  t <- (the_data %>% select(assembly_id, quadrat_id)
+        %>% group_by(assembly_id)
+        %>% summarise(trials = n_distinct(quadrat_id)))
+  # Frequency of each species in each assembly, hits/trials
+  species_freq <- (left_join(species_hits, t, by = "assembly_id")
+                   %>% mutate(freq = hits/trials)
+                   %>% mutate(CrI5 = qbeta(0.05, hits+1, 1+trials-hits))
+                   %>% mutate(median = qbeta(0.5, hits+1, 1+trials-hits)) # For comparison with frequency as hits/trials
+                   %>% mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
+  # Include community
+  nvcs <- the_data %>% select(assembly_id, nvc) %>% distinct()
+  data <- left_join(species_freq, nvcs, by = "assembly_id") 
+  # Include assembly_name
+  assemblies <- the_data %>%  select(assembly_id, assembly_name) %>% distinct()
+  data <- (left_join(data, assemblies, by = "assembly_id")
+           %>% select(assembly_id, assembly_name, nvc, species_name, 
+                      hits, trials, freq, CrI5, median, CrI95)) # reorder
+  d <- the_data %>% select(assembly_id, species_id, species_name)
+  # Hits for each species in each assembly
+  species_hits <- (d %>% group_by(assembly_id, species_name) 
+                   %>% summarise(hits = n()))
+  # Trials (quadrats) - quadrat count for each assembly (is indepenedent of species!)
+  t <- (the_data %>% select(assembly_id, quadrat_id)
+        %>% group_by(assembly_id)
+        %>% summarise(trials = n_distinct(quadrat_id)))
+  # Frequency of each species in each assembly, hits/trials
+  species_freq <- (left_join(species_hits, t, by = "assembly_id")
+                   %>% mutate(freq = hits/trials)
+                   %>% mutate(CrI5 = qbeta(0.05, hits+1, 1+trials-hits))
+                   %>% mutate(median = qbeta(0.5, hits+1, 1+trials-hits)) # For comparison with frequency as hits/trials
+                   %>% mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
+  # Include community
+  nvcs <- the_data %>% select(assembly_id, nvc) %>% distinct()
+  data <- left_join(species_freq, nvcs, by = "assembly_id") 
+  # Include assembly_name
+  assemblies <- the_data %>%  select(assembly_id, assembly_name) %>% distinct()
+  data <- (left_join(data, assemblies, by = "assembly_id")
+           %>% select(assembly_id, assembly_name, nvc, species_name, 
+                      hits, trials, freq, CrI5, median, CrI95)) # reorder
+  return(data)
 }
 
 CommunitySpeciesCounts <- function(freq_by_community)
@@ -112,15 +130,16 @@ AssemblySpeciesCounts <- function(freq_by_assembly)
 
 
 ########################## MAIN ##############################
+# Following useful for testing the functions. Comment out in general
 # GET DATA FROM DB
-the_data <- GetTheData()
-
-# In Shiny: don't just pass the_data but pass a selection, e.g. community, year, species.
-species_freq <-  GrossFrequency(the_data)
-freq_by_community <- FrequencyByCommunity(the_data)
-freq_by_assembly <- FrequencyByAssembly(the_data)
-#  Species counts by community
-community_species_counts <- CommunitySpeciesCounts(freq_by_community)
-# and by assembly
-assembly_species_counts <- AssemblySpeciesCounts(freq_by_assembly)
+# the_data <- GetTheData()
+# 
+# # In Shiny: don't just pass the_data but pass a selection, e.g. community, year, species.
+# species_freq <-  GrossFrequency(the_data)
+# freq_by_community <- FrequencyByCommunity(the_data)
+# freq_by_assembly <- FrequencyByAssembly(the_data)
+# #  Species counts by community
+# community_species_counts <- CommunitySpeciesCounts(freq_by_community)
+# # and by assembly
+# assembly_species_counts <- AssemblySpeciesCounts(freq_by_assembly)
 

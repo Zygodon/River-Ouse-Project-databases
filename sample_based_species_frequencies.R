@@ -1,4 +1,6 @@
 # Get quadrat-based species frequencies for assemblies.
+# This is essentially the same as FrequencyByAssembly in db_extract.R
+# Version here is possibly more readable
 # Libraries
 library("RMySQL")
 library(tidyverse)
