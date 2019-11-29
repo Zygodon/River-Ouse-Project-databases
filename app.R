@@ -79,7 +79,7 @@ server <- function(input, output) {
                "Species frequencies by community" = FrequencyByCommunity(the_data),
                "Species frequencies by assembly" = FrequencyByAssembly(the_data),
                "Species counts by community" = CommunitySpeciesCounts(FrequencyByCommunity(the_data)),
-               "Species counts by assembly" =  AssemblySpeciesCounts(FrequencyByAssembly(the_data)))     
+               "Species counts by assembly" =  AssemblySpeciesCounts(the_data))     
     })
  
       
