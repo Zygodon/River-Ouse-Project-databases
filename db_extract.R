@@ -10,6 +10,21 @@ dbDisconnectAll <- function(){
   cat(sprintf("%s connection(s) closed.\n", ile))
 }
 
+# General SQL query
+query <- function(q)
+{
+  # Remote DB with password - works Ok but table mg_standards6 is not available on PI. Should update.
+  con <- dbConnect(MySQL(), 
+                   user  = "guest",
+                   password    = "guest",
+                   dbname="meadows",
+                   port = 3306,
+                   host   = "sxouse.ddns.net")
+  rs1 = dbSendQuery(con, q)
+  return(as_tibble(fetch(rs1, n=-1)))
+  dbDisconnectAll()
+}
+
 # Load the database
 GetTheData <-  function()
 {
@@ -168,3 +183,7 @@ AssemblySpeciesCounts <- function(t_d) # the_data
 # community_species_counts <- CommunitySpeciesCounts(the_data)
 # assembly_species_counts <- AssemblySpeciesCounts(the_data)
 
+# General procedure for sending an SQL query
+
+q <- "SELECT Community, species_id, p_central FROM meadows.mg_rodwell where Community like 'MG%';"
+t <- query(q)
