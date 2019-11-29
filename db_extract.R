@@ -23,15 +23,15 @@ GetTheData <-  function()
                    host   = "sxouse.ddns.net")
   
   
-  q <- sprintf('select assembly_id, assembly_name, quadrat_count, nvc, quadrat_id, visit_date, records_id, species.species_id, 
+  q <- sprintf('select assembly_id, assembly_name, quadrat_count, community, quadrat_id, visit_date, records_id, species.species_id, 
     species.species_name from assemblies
       join quadrats on quadrats.assembly_id = assemblies_id
       join visit_dates on quadrats.vd_id = visit_dates.vds_id
       join records on records.quadrat_id = quadrats_id
       join species on species.species_id = records.species_id
     # Two assemblies have 0 quadrat count; exclude A.capillaris_stolonifera; exclude 
-    # some odd assemblies with no assigned nvc
-    where quadrat_count > 0 and species.species_id != 4 and nvc is not null;') 
+    # some odd assemblies with no assigned community
+    where quadrat_count > 0 and species.species_id != 4 and community is not null;') 
   # NOTE: this extract includes "MG5", i.e. some MG5 communities where the team have not decided
   # on a sub-group.
   
@@ -59,10 +59,10 @@ GrossFrequency <- function(t_d)
 FrequencyByCommunity <- function(t_d) # the_data
 {
   # Need trials for each community
-  trials_by_community <- t_d %>% group_by(nvc) %>% summarise(trials = n_distinct(quadrat_id))
+  trials_by_community <- t_d %>% group_by(community) %>% summarise(trials = n_distinct(quadrat_id))
   # Need hits for each community and species
-  hits_by_community <- t_d %>% group_by(nvc, species_name, species_id) %>% summarise(hits = n_distinct(records_id))
-  return(left_join(hits_by_community, trials_by_community, by = "nvc")
+  hits_by_community <- t_d %>% group_by(community, species_name, species_id) %>% summarise(hits = n_distinct(records_id))
+  return(left_join(hits_by_community, trials_by_community, by = "community")
                         %>%  mutate(freq = hits/trials)
                         %>%  mutate(CrI5 = qbeta(0.05, hits+1, 1+trials-hits))
                         %>%  mutate(median = qbeta(0.5, hits+1, 1+trials-hits)) # For comparison with frequency as hits/trials
@@ -87,12 +87,12 @@ FrequencyByAssembly <- function(t_d)
                    %>% mutate(median = qbeta(0.5, hits+1, 1+trials-hits)) # For comparison with frequency as hits/trials
                    %>% mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
   # Include community
-  nvcs <- the_data %>% select(assembly_id, nvc) %>% distinct()
+  nvcs <- the_data %>% select(assembly_id, community) %>% distinct()
   data <- left_join(species_freq, nvcs, by = "assembly_id") 
   # Include assembly_name
   assemblies <- the_data %>%  select(assembly_id, assembly_name) %>% distinct()
   data <- (left_join(data, assemblies, by = "assembly_id")
-           %>% select(assembly_id, assembly_name, nvc, species_name, 
+           %>% select(assembly_id, assembly_name, community, species_name, 
                       hits, trials, freq, CrI5, median, CrI95)) # reorder
   d <- the_data %>% select(assembly_id, species_id, species_name)
   # Hits for each species in each assembly
@@ -109,12 +109,12 @@ FrequencyByAssembly <- function(t_d)
                    %>% mutate(median = qbeta(0.5, hits+1, 1+trials-hits)) # For comparison with frequency as hits/trials
                    %>% mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
   # Include community
-  nvcs <- the_data %>% select(assembly_id, nvc) %>% distinct()
+  nvcs <- the_data %>% select(assembly_id, community) %>% distinct()
   data <- left_join(species_freq, nvcs, by = "assembly_id") 
   # Include assembly_name
   assemblies <- the_data %>%  select(assembly_id, assembly_name) %>% distinct()
   data <- (left_join(data, assemblies, by = "assembly_id")
-           %>% select(assembly_id, assembly_name, nvc, species_name, 
+           %>% select(assembly_id, assembly_name, community, species_name, 
                       hits, trials, freq, CrI5, median, CrI95)) # reorder
   return(data)
 }
@@ -126,10 +126,10 @@ CommunitySpeciesCounts <- function(t_d) # the_data
   sp_cnt <- (t_d %>% select(quadrat_id, species_id)
              %>% group_by(quadrat_id) %>% summarise(sp_count = n()))
   # 2. Join communities, 
-  communities <- t_d %>% select(nvc, quadrat_id) %>% distinct()
+  communities <- t_d %>% select(community, quadrat_id) %>% distinct()
   d1 <- left_join(sp_cnt, communities, by = "quadrat_id")
   # 3. Summarise - mean and measures of spread
-  data <- (d1 %>% group_by(nvc) 
+  data <- (d1 %>% group_by(community) 
            %>% summarise(mean_species_count = mean(sp_count), sd = sd(sp_count), 
                          CrI5 = quantile(sp_count, 0.05), median = median(sp_count), 
                          CrI95 = quantile(sp_count, 0.95)))

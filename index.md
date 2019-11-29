@@ -50,7 +50,7 @@ The database can also be accessed from R or other programming language. You can 
 ```r
 library("RMySQL")
 mydb = dbConnect(MySQL(), user='guest', password = 'guest', dbname='meadows', port = 3306, host='sxouse.ddns.net')
-rs1 = dbSendQuery(mydb, "select assembly_name, nvc from assemblies where nvc is not null;")
+rs1 = dbSendQuery(mydb, "select assembly_name, community from assemblies where community is not null;")
 data <- fetch(rs1, n=10)
 dbDisconnect(mydb)
 ```
@@ -64,17 +64,17 @@ print(data)
 ```
 
 ```
-##          assembly_name  nvc
-## 1             Baybrook MG5a
-## 2    Little_field_east MG6b
-## 3             Clayland MG5a
-## 4         Horse_brooks MG6a
-## 5    Chilly_wood_brook MG7d
-## 6            Four_acre MG5a
-## 7             Inafield MG5a
-## 8         Middle_field MG5a
-## 9  Lower_eastlands_dry MG5c
-## 10 Lower_eastlands_wet  M23
+##          assembly_name community
+## 1             Baybrook      MG5a
+## 2    Little_field_east      MG6b
+## 3             Clayland      MG5a
+## 4         Horse_brooks      MG6a
+## 5    Chilly_wood_brook      MG7d
+## 6            Four_acre      MG5a
+## 7             Inafield      MG5a
+## 8         Middle_field      MG5a
+## 9  Lower_eastlands_dry      MG5c
+## 10 Lower_eastlands_wet       M23
 ```
 
 Or more complicated joins:
@@ -82,12 +82,12 @@ Or more complicated joins:
 
 ```r
 library("RMySQL")
-q <- "select assembly_name, nvc, count(distinct(species.species_id))
+q <- "select assembly_name, community, count(distinct(species.species_id))
 from assemblies
 join quadrats on quadrats.assembly_id = assemblies_id
 join records on records.quadrat_id = quadrats_id
 join species on species.species_id = records.species_id
-where nvc in ('MG5a', 'MG5c', 'MG6a', 'MG6b')
+where community in ('MG5a', 'MG5c', 'MG6a', 'MG6b')
 # and species.species_name = 'Lolium_perenne'
 group by assemblies_id;" 
 
@@ -110,17 +110,17 @@ print(data)
 ```
 
 ```
-##          assembly_name  nvc count(distinct(species.species_id))
-## 1             Baybrook MG5a                                  37
-## 2    Little_field_east MG6b                                  29
-## 3             Clayland MG5a                                  34
-## 4         Horse_brooks MG6a                                  27
-## 5            Four_acre MG5a                                  31
-## 6             Inafield MG5a                                  32
-## 7         Middle_field MG5a                                  37
-## 8  Lower_eastlands_dry MG5c                                  43
-## 9        Spring_meadow MG6b                                  31
-## 10        Cross_meadow MG6b                                  32
+##          assembly_name community count(distinct(species.species_id))
+## 1             Baybrook      MG5a                                  37
+## 2    Little_field_east      MG6b                                  29
+## 3             Clayland      MG5a                                  34
+## 4         Horse_brooks      MG6a                                  27
+## 5            Four_acre      MG5a                                  31
+## 6             Inafield      MG5a                                  32
+## 7         Middle_field      MG5a                                  37
+## 8  Lower_eastlands_dry      MG5c                                  43
+## 9        Spring_meadow      MG6b                                  31
+## 10        Cross_meadow      MG6b                                  32
 ```
 ### Access from spreadsheet.
 Single tables can be imported into Excel using the MySQL for Excel add-in, use the information shown in the code snippets to create a connection.
@@ -158,7 +158,7 @@ Assemblies are the vegetative units that we sample. Sites and meadows (not avail
 
 The assemblies table also records the quadrat count for the assembly, and the size of quadrat used to sample it. We use either 2mx2m or 4mx4m quadrats.
 
-For each assembly, the team assign an NVC class by matching the NVC standards using MATCH software together with an understanding of general grassland ecology. The assessed NVC class is listed in the nvc column, and the top-level NVC community is in major_nvc_community.
+For each assembly, the team assign an NVC class by matching the NVC standards using MATCH software together with an understanding of general grassland ecology. The assessed NVC class is listed in the community column, and the top-level NVC community is in major_nvc_community.
 
 ### mg_rodwell.
 This table contains mesotrophic grassland species frequencies listed in British Plant Communities vol 3, Grasslands and Montane Communities.

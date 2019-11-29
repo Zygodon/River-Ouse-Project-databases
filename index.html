@@ -422,30 +422,30 @@ The <a href="http://www.sussex.ac.uk/riverouse/">River Ouse Project</a> was star
 <p>The database can also be accessed from R or other programming language. You can use a simple query:</p>
 <pre class="r"><code>library(&quot;RMySQL&quot;)
 mydb = dbConnect(MySQL(), user=&#39;guest&#39;, password = &#39;guest&#39;, dbname=&#39;meadows&#39;, port = 3306, host=&#39;sxouse.ddns.net&#39;)
-rs1 = dbSendQuery(mydb, &quot;select assembly_name, nvc from assemblies where nvc is not null;&quot;)
+rs1 = dbSendQuery(mydb, &quot;select assembly_name, community from assemblies where community is not null;&quot;)
 data &lt;- fetch(rs1, n=10)
 dbDisconnect(mydb)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>print(data)</code></pre>
-<pre><code>##          assembly_name  nvc
-## 1             Baybrook MG5a
-## 2    Little_field_east MG6b
-## 3             Clayland MG5a
-## 4         Horse_brooks MG6a
-## 5    Chilly_wood_brook MG7d
-## 6            Four_acre MG5a
-## 7             Inafield MG5a
-## 8         Middle_field MG5a
-## 9  Lower_eastlands_dry MG5c
-## 10 Lower_eastlands_wet  M23</code></pre>
+<pre><code>##          assembly_name community
+## 1             Baybrook      MG5a
+## 2    Little_field_east      MG6b
+## 3             Clayland      MG5a
+## 4         Horse_brooks      MG6a
+## 5    Chilly_wood_brook      MG7d
+## 6            Four_acre      MG5a
+## 7             Inafield      MG5a
+## 8         Middle_field      MG5a
+## 9  Lower_eastlands_dry      MG5c
+## 10 Lower_eastlands_wet       M23</code></pre>
 <p>Or more complicated joins:</p>
 <pre class="r"><code>library(&quot;RMySQL&quot;)
-q &lt;- &quot;select assembly_name, nvc, count(distinct(species.species_id))
+q &lt;- &quot;select assembly_name, community, count(distinct(species.species_id))
 from assemblies
 join quadrats on quadrats.assembly_id = assemblies_id
 join records on records.quadrat_id = quadrats_id
 join species on species.species_id = records.species_id
-where nvc in (&#39;MG5a&#39;, &#39;MG5c&#39;, &#39;MG6a&#39;, &#39;MG6b&#39;)
+where community in (&#39;MG5a&#39;, &#39;MG5c&#39;, &#39;MG6a&#39;, &#39;MG6b&#39;)
 # and species.species_name = &#39;Lolium_perenne&#39;
 group by assemblies_id;&quot; 
 
@@ -456,17 +456,17 @@ dbDisconnect(mydb)</code></pre>
 <pre><code>## Warning: Closing open result sets</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>print(data)</code></pre>
-<pre><code>##          assembly_name  nvc count(distinct(species.species_id))
-## 1             Baybrook MG5a                                  37
-## 2    Little_field_east MG6b                                  29
-## 3             Clayland MG5a                                  34
-## 4         Horse_brooks MG6a                                  27
-## 5            Four_acre MG5a                                  31
-## 6             Inafield MG5a                                  32
-## 7         Middle_field MG5a                                  37
-## 8  Lower_eastlands_dry MG5c                                  43
-## 9        Spring_meadow MG6b                                  31
-## 10        Cross_meadow MG6b                                  32</code></pre>
+<pre><code>##          assembly_name community count(distinct(species.species_id))
+## 1             Baybrook      MG5a                                  37
+## 2    Little_field_east      MG6b                                  29
+## 3             Clayland      MG5a                                  34
+## 4         Horse_brooks      MG6a                                  27
+## 5            Four_acre      MG5a                                  31
+## 6             Inafield      MG5a                                  32
+## 7         Middle_field      MG5a                                  37
+## 8  Lower_eastlands_dry      MG5c                                  43
+## 9        Spring_meadow      MG6b                                  31
+## 10        Cross_meadow      MG6b                                  32</code></pre>
 </div>
 <div id="access-from-spreadsheet." class="section level3">
 <h3>Access from spreadsheet.</h3>
@@ -500,7 +500,7 @@ dbDisconnect(mydb)</code></pre>
 <h3>Assemblies.</h3>
 <p>Assemblies are the vegetative units that we sample. Sites and meadows (not available to “guest”) record the location of our samples, but often it is found that one meadow may have several recognisable vegetative units in it. The constraint link between the sites and meadows tables in Figure 1 show this one-to-many relationship. Quadrats need to know which assembly they belong to, so the quadrats table entries each have an assembly_id which can be used to join the assemblies and quadrats tables on assemblies_id = assembly_id. Note the naming convention here, which we adhere to throughout: Parent items (assemblies) have a (plural) assemblies_id; child items (quadrats) have a (singular) assembly_id because each belongs to just one assembly.</p>
 <p>The assemblies table also records the quadrat count for the assembly, and the size of quadrat used to sample it. We use either 2mx2m or 4mx4m quadrats.</p>
-<p>For each assembly, the team assign an NVC class by matching the NVC standards using MATCH software together with an understanding of general grassland ecology. The assessed NVC class is listed in the nvc column, and the top-level NVC community is in major_nvc_community.</p>
+<p>For each assembly, the team assign an NVC class by matching the NVC standards using MATCH software together with an understanding of general grassland ecology. The assessed NVC class is listed in the community column, and the top-level NVC community is in major_nvc_community.</p>
 </div>
 <div id="mg_rodwell." class="section level3">
 <h3>mg_rodwell.</h3>
