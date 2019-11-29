@@ -1,0 +1,48 @@
+---
+title: "Stellaria notebook"
+output: html_notebook
+---
+# About
+
+John P drew our attention to various species that were not shown as common in the NVC standards, but which we frequently find in our sites, notwithstanding they have been assessed as belonging to a community that "should" not have them at high frequency. Prominent among these is *Stellaria graminea*. The purpose of this notebook is to track the development of an application to find these unconforming species.
+
+Start by loading the data
+
+```{r}
+source("db_extract.R")
+the_data <- GetTheData()
+```
+
+And we're going to need species_frequency by assembly; but maybe could decide to go by community?
+```{r}
+frequency_by_assembly <- FrequencyByAssembly(the_data)
+frequency_by_community <- FrequencyByCommunity(the_data)
+```
+Let's plot mean frequency by assembly vs frequency by community for all species:
+```{r}
+fba <- frequency_by_assembly %>% select(assembly_id, species_name, community, freq)
+fbc <- frequency_by_community %>% select(species_name,community, freq)
+jf <- left_join(fbc, fba, by = c("community", "species_name")) %>% filter(species_name == "Stellaria_graminea" & grepl("MG", community))
+f <- ggplot(jf, aes(freq.x, freq.y, colour = community)) +
+  geom_point()+
+  xlab("frequency by community") + ylab("frequency by assembly")+
+  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
+print(f)
+
+```
+This is for *S. graminea* and the MG communities. So (a) there are lots more assemblies than there are communities (of course) and (b) frequency by assembly tends to be larger than frequency by community; aggregating over community has smoothed out a lot of variation. My feeling is that it will be more illuminating to eliminate the assembly variable to start with, we can explore variability with assembly later.
+
+Next question: how to compare with standard values. Explore select into table mg_rodwell in the meadows database ... in which we have columns community, species_id (and name, but not to be relied on) and p_central, the central frequency of the categories I .. V.
+
+*Stellaria graminea* id 139. It so happens that p_central == 0.1 for *S. graminea* for all MG communities:
+SELECT Community, species_id, p_central FROM meadows.mg_rodwell where Community like "MG%" && species_id = 139;
+( I wonder whether I can communicate directly with the DB from here using SQL?).
+
+Anyway, it seems quite possible to collect the p_central values for all species and plot against frequency by community
+
+```{r}
+
+```
+
+
+
