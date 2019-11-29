@@ -83,7 +83,7 @@ Single tables can be imported into Excel using the MySQL for Excel add-in, use t
 
 ### Access from Shiny App.
 The on-line app calculates species frequencies and counts by community or assembly. It's under development, more functionality to be added.
-[Click here to run it](https://sussexouse.shinyapps.io/meadows_db/)
+[Click here to run it]( https://sussexouse.shinyapps.io/River-Ouse-Project-databases/)
 
 ## Tables.
 
