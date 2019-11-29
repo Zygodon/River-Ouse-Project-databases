@@ -63,7 +63,7 @@ server <- function(input, output) {
     # Downloadable csv of all data ----
     output$downloadAll <- downloadHandler(
       filename = function() {
-        paste("meadows_data", ".csv", sep = "")
+        paste("species_frequencies", ".csv", sep = "")
       },
       content = function(file) {
         write.csv(GetTheData(), file, row.names = FALSE)
@@ -78,7 +78,7 @@ server <- function(input, output) {
                "Gross species frequencies" = GrossFrequency(the_data),
                "Species frequencies by community" = FrequencyByCommunity(the_data),
                "Species frequencies by assembly" = FrequencyByAssembly(the_data),
-               "Species counts by community" = CommunitySpeciesCounts(FrequencyByCommunity(the_data)),
+               "Species counts by community" = CommunitySpeciesCounts(the_data),
                "Species counts by assembly" =  AssemblySpeciesCounts(the_data))     
     })
  
@@ -90,8 +90,9 @@ server <- function(input, output) {
     
     # Downloadable csv of selected dataset ----
     output$downloadData <- downloadHandler(
-        filename = function() {
-            paste(input$dataset, ".csv", sep = "")
+      # filename = function() {
+      file = function() {
+          paste(input$dataset, ".csv", sep = "")
         },
         content = function(file) {
             write.csv(datasetInput(), file, row.names = FALSE)
