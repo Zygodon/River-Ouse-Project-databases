@@ -159,12 +159,12 @@ AssemblySpeciesCounts <- function(t_d) # the_data
 ########################## MAIN ##############################
 # Following useful for testing the functions. Comment out in general
 # GET DATA FROM DB
-the_data <- GetTheData()
-
-# In Shiny: don't just pass the_data but pass a selection, e.g. community, year, species.
-species_freq <-  GrossFrequency(the_data)
-freq_by_community <- FrequencyByCommunity(the_data)
-freq_by_assembly <- FrequencyByAssembly(the_data)
-community_species_counts <- CommunitySpeciesCounts(the_data)
-assembly_species_counts <- AssemblySpeciesCounts(the_data)
+# the_data <- GetTheData()
+# 
+# # In Shiny: don't just pass the_data but pass a selection, e.g. community, year, species.
+# species_freq <-  GrossFrequency(the_data)
+# freq_by_community <- FrequencyByCommunity(the_data)
+# freq_by_assembly <- FrequencyByAssembly(the_data)
+# community_species_counts <- CommunitySpeciesCounts(the_data)
+# assembly_species_counts <- AssemblySpeciesCounts(the_data)
 
