@@ -123,10 +123,24 @@ CommunitySpeciesCounts <- function(freq_by_community)
   return(freq_by_community %>% group_by(nvc) %>% summarise(species_count = n_distinct(species_id)))
 }
 
-AssemblySpeciesCounts <- function(freq_by_assembly)
+
+AssemblySpeciesCounts <- function(t_d)
 {
-  return(freq_by_assembly %>% group_by(assembly_id, assembly_name) %>% summarise(species_count = n_distinct(species_id)))
-}
+  # 1. Species counts per quadrat
+  sp_cnt <- (t_d %>% select(quadrat_id, species_id)
+             %>% group_by(quadrat_id) %>% summarise(sp_count = n()))
+  
+  # 2. Join assemblies, summarise - mean and measures of spread
+  assemblies <- t_d %>% select(assembly_id, quadrat_id) %>% distinct()
+  d1 <- left_join(sp_cnt, assemblies, by = "quadrat_id")
+  d2 <- d1 %>% group_by(assembly_id) %>% summarise(mean_species_count = mean(sp_count), sd = sd(sp_count), CrI5 = quantile(sp_count, 0.05), median = median(sp_count), CrI95 = quantile(sp_count, 0.95))
+  
+  # 3.Add assembly_name
+  ass_names <- t_d %>% select(assembly_name, assembly_id) %>% distinct()
+  data <- (left_join(d2, ass_names, by = "assembly_id") 
+           %>% select(assembly_id, assembly_name, mean_species_count, sd, CrI5, median, CrI95))
+  return(data)
+  }
 
 
 ########################## MAIN ##############################
@@ -141,19 +155,6 @@ the_data <- GetTheData()
 # #  Species counts by community
 # community_species_counts <- CommunitySpeciesCounts(freq_by_community)
 # # and by assembly
-# assembly_species_counts <- AssemblySpeciesCounts(freq_by_assembly)
+assembly_species_counts <- AssemblySpeciesCounts(the_data)
 
-# Re do assembly species counts.
-# 1. Species counts per quadrat
-sp_cnt <- (the_data %>% select(quadrat_id, species_id)
-                   %>% group_by(quadrat_id) %>% summarise(sp_count = n()))
 
-# 2. Join assemblies
-assemblies <- the_data %>% select(assembly_id, quadrat_id) %>% distinct()
-d1 <- left_join(sp_cnt, assemblies, by = "quadrat_id")
-d2 <- d1 %>% group_by(assembly_id) %>% summarise(mean_species_count = mean(sp_count), sd = sd(sp_count), CrI5 = quantile(sp_count, 0.05), median = median(sp_count), CrI95 = quantile(sp_count, 0.95))
-
-# 3.Add assembly_name
-ass_names <- the_data %>% select(assembly_name, assembly_id) %>% distinct()
-data <- (left_join(d2, ass_names, by = "assembly_id") 
-        %>% select(assembly_id, assembly_name, mean_species_count, sd, CrI5, median, CrI95))
