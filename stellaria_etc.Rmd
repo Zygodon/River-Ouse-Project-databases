@@ -28,7 +28,10 @@ f <- ggplot(jf, aes(freq.x, freq.y, colour = community)) +
   xlab("frequency by community") + ylab("frequency by assembly")+
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
 print(f)
+```
 
+
+```{r}
 ```
 This is for *S. graminea* and the MG communities. So (a) there are lots more assemblies than there are communities (of course) and (b) frequency by assembly tends to be larger than frequency by community; aggregating over community has smoothed out a lot of variation. My feeling is that it will be more illuminating to eliminate the assembly variable to start with, we can explore variability with assembly later.
 
@@ -44,6 +47,29 @@ Anyway, it seems quite possible to collect the p_central values for all species 
 q <- "SELECT Community, species_id, p_central FROM meadows.mg_rodwell where Community like 'MG%';"
 std_freqs <- query(q)
 ```
+and match up with species frequencies by community
+```{r}
+rm(jf) # We don't need it any more
+jf1 <- left_join(frequency_by_community, std_freqs, by = c("community"="Community", "species_id"))
 
+```
+
+Lots of NAs here; (a) because mires (M) are included in the survey data but not in the mg_rodwell table - yet - because as its name implies, it is just the MG communities. And (b), because it seems we have detected some species that the standards don't list in those communities at all. So (a), filter out all the mires; (b) set the remaining NAs to zero.
+```{r}
+# Would be easier if we'd excluded mires from the_data to start with! 
+jf2 <- jf1 %>% filter(grepl("MG", community)) %>% replace_na(list(p_central = 0))
+rm(jf1)
+```
+So now we want filter to include only cases where CrI5 > p_central or CrI95 < p_centra, and then plot (survey) frequencies against standard frequencies (p_central)
+```{r}
+jf3 <- jf2 %>% filter(CrI5 > p_central || CrI95 < p_central)
+f2 <- ggplot(jf3, aes(p_central, freq, colour = community)) +
+  geom_jitter(size = 3)+
+  xlab("Standard frequency") + ylab("Survey frequency")+
+  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
+print(f2)
+
+```
+This gives a surprising number of species in strong disagrrement with the standard (we may ignore the big cluster near (0, 0) because of the way CrI5 is calculated - it can be very near ero, but not actually zero). Really need this plot interactive so we can discover which species give rise to each point.
 
 
