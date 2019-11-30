@@ -64,12 +64,13 @@ So now we want filter to include only cases where CrI5 > p_central or CrI95 < p_
 ```{r}
 jf3 <- jf2 %>% filter(CrI5 > p_central || CrI95 < p_central)
 f2 <- ggplot(jf3, aes(p_central, freq, colour = community)) +
-  geom_jitter(size = 3)+
+  geom_jitter(aes(text = species_name), size = 3) + #, name = "species_name")+
   xlab("Standard frequency") + ylab("Survey frequency")+
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
-print(f2)
+ggplotly(f2)
+# print(f2)
 
 ```
-This gives a surprising number of species in strong disagrrement with the standard (we may ignore the big cluster near (0, 0) because of the way CrI5 is calculated - it can be very near ero, but not actually zero). Really need this plot interactive so we can discover which species give rise to each point.
+This gives a surprising number of species in strong disagrrement with the standard (we may ignore the big cluster near (0, 0) because of the way CrI5 is calculated - it can be very near zero, but not actually zero). Interactive plot: is this useful?
 
 

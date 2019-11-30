@@ -2,6 +2,7 @@
 # Libraries
 library("RMySQL")
 library(tidyverse)
+library(plotly)
 
 # Functions
 dbDisconnectAll <- function(){
