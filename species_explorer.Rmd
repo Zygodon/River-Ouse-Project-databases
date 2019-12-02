@@ -23,22 +23,27 @@ selectInput("Species", "Choose a species",
                        %>% arrange(species_name))
 )
 textOutput("Selected")
+
+downloadHandler(filename = function() { 
+    return(paste('Example', input$Species, '.csv', sep=''))
+
+ }, content = function(file) {
+   write.csv(the_table(), file)
+ })
+
 tableOutput("table")
 
 output$Selected <- renderText({
   paste("You chose", input$Species)
 })
 
-# the_table <- reactive({
-# FrequencyByAssembly(the_data) %>% filter(species_name == input$Species) %>% select(assembly_id, assembly_name, community, freq, CrI5, median, CrI95)
-# })
-#
 the_table <- reactive({
   SpeciesFreqWithStandard(the_data, input$Species)
 })
 
 # Table of selected species ----
 output$table <- renderTable({the_table()})
+
 ```
 
  
