@@ -29,17 +29,12 @@ output$Selected <- renderText({
   paste("You chose", input$Species)
 })
 
-# the_table <- reactive
-# ({
-#     d <- FrequencyByAssembly(the_data)
-#     d1 <- left_join(d, the_data %>% select(species_name, species_id) %>% distinct(), by = "species_name")
-#     d2 <- left_join(d1, std_freqs, by = c("species_id", "community"))
-#     d2 %>% filter(species_name == input$Species) %>% select(assembly_id, assembly_name, community, freq, CrI5, median, CrI95, p_central)
+# the_table <- reactive({
+# FrequencyByAssembly(the_data) %>% filter(species_name == input$Species) %>% select(assembly_id, assembly_name, community, freq, CrI5, median, CrI95)
 # })
-
+#
 the_table <- reactive({
-FrequencyByAssembly(the_data) %>% filter(species_name == input$Species) %>% select(assembly_id, assembly_name, community, freq, CrI5, median, CrI95)
-
+  SpeciesFreqWithStandard(the_data, input$Species)
 })
 
 # Table of selected species ----
