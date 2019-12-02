@@ -73,4 +73,3 @@ ggplotly(f2)
 ```
 This gives a surprising number of species in strong disagrrement with the standard (we may ignore the big cluster near (0, 0) because of the way CrI5 is calculated - it can be very near zero, but not actually zero). Interactive plot: is this useful?
 
-
