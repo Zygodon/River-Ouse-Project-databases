@@ -93,7 +93,7 @@ FrequencyByAssembly <- function(t_d)
   species_hits <- (d %>% group_by(assembly_id, species_name) 
                    %>% summarise(hits = n()))
   # Trials (quadrats) - quadrat count for each assembly (is indepenedent of species!)
-  t <- (the_data %>% select(assembly_id, quadrat_id)
+  t <- (t_d %>% select(assembly_id, quadrat_id)
         %>% group_by(assembly_id)
         %>% summarise(trials = n_distinct(quadrat_id)))
   # Frequency of each species in each assembly, hits/trials
@@ -103,10 +103,10 @@ FrequencyByAssembly <- function(t_d)
                    %>% mutate(median = qbeta(0.5, hits+1, 1+trials-hits)) # For comparison with frequency as hits/trials
                    %>% mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
   # Include community
-  nvcs <- the_data %>% select(assembly_id, community) %>% distinct()
+  nvcs <- t_d %>% select(assembly_id, community) %>% distinct()
   data <- left_join(species_freq, nvcs, by = "assembly_id") 
   # Include assembly_name
-  assemblies <- the_data %>%  select(assembly_id, assembly_name) %>% distinct()
+  assemblies <- t_d %>%  select(assembly_id, assembly_name) %>% distinct()
   data <- (left_join(data, assemblies, by = "assembly_id")
            %>% select(assembly_id, assembly_name, community, species_name, 
                       hits, trials, freq, CrI5, median, CrI95)) # reorder
@@ -125,10 +125,10 @@ FrequencyByAssembly <- function(t_d)
                    %>% mutate(median = qbeta(0.5, hits+1, 1+trials-hits)) # For comparison with frequency as hits/trials
                    %>% mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
   # Include community
-  nvcs <- the_data %>% select(assembly_id, community) %>% distinct()
+  nvcs <- t_d %>% select(assembly_id, community) %>% distinct()
   data <- left_join(species_freq, nvcs, by = "assembly_id") 
   # Include assembly_name
-  assemblies <- the_data %>%  select(assembly_id, assembly_name) %>% distinct()
+  assemblies <- t_d %>%  select(assembly_id, assembly_name) %>% distinct()
   data <- (left_join(data, assemblies, by = "assembly_id")
            %>% select(assembly_id, assembly_name, community, species_name, 
                       hits, trials, freq, CrI5, median, CrI95)) # reorder
