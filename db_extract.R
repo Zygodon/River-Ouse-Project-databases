@@ -3,7 +3,6 @@
 library("RMySQL")
 library(tidyverse)
 
-
 # Functions
 dbDisconnectAll <- function(){
   ile <- length(dbListConnections(MySQL())  )

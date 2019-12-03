@@ -9,6 +9,7 @@ John P drew our attention to various species that were not shown as common in th
 Start by loading the data
 
 ```{r}
+library(plotly)
 source("db_extract.R")
 the_data <- GetTheData()
 ```
@@ -18,7 +19,7 @@ And we're going to need species_frequency by assembly; but maybe could decide to
 frequency_by_assembly <- FrequencyByAssembly(the_data)
 frequency_by_community <- FrequencyByCommunity(the_data)
 ```
-Let's plot mean frequency by assembly vs frequency by community for all species:
+Let's plot mean frequency by assembly vs frequency by community for *Stellaria graminea*:
 ```{r}
 fba <- frequency_by_assembly %>% select(assembly_id, species_name, community, freq)
 fbc <- frequency_by_community %>% select(species_name,community, freq)
@@ -60,7 +61,7 @@ Lots of NAs here; (a) because mires (M) are included in the survey data but not 
 jf2 <- jf1 %>% filter(grepl("MG", community)) %>% replace_na(list(p_central = 0))
 rm(jf1)
 ```
-So now we want filter to include only cases where CrI5 > p_central or CrI95 < p_centra, and then plot (survey) frequencies against standard frequencies (p_central)
+So now we want filter to include only cases where CrI5 > p_central or CrI95 < p_central, and then plot (survey) frequencies against standard frequencies (p_central)
 ```{r}
 jf3 <- jf2 %>% filter(CrI5 > p_central || CrI95 < p_central)
 f2 <- ggplot(jf3, aes(p_central, freq, colour = community)) +
@@ -72,4 +73,37 @@ ggplotly(f2)
 
 ```
 This gives a surprising number of species in strong disagrrement with the standard (we may ignore the big cluster near (0, 0) because of the way CrI5 is calculated - it can be very near zero, but not actually zero). Interactive plot: is this useful?
+
+Even so, there's too many species here for this to be a useful way of exploring the data. Filter out low frequency species, and then perhaps present the data as an interactive table.
+
+### Reduce species count.
+There are `r nrow(the_data)` records. *Stellaria graminea* accounts for `r the_data %>% select(species_id, records_id) %>% filter(species_id == 139) %>% nrow()`
+or `r 100*(the_data %>% select(species_id, records_id) %>% filter(species_id == 139) %>% nrow())/nrow(the_data)`%, so suggest reducing the data to species with less than 2% of the count. To start with, we have `r the_data %>% select(species_id) %>% distinct() %>% nrow()` species. 
+```{r}
+d1 <- (the_data 
+       %>% select(records_id, species_id) 
+       %>% group_by(species_id) 
+       %>% summarise(cnt = n())
+       %>% mutate(frac = cnt/nrow(the_data))
+       %>% filter(frac >= 0.02))
+```
+Removing those accounting for less than 0.2% of the records leaves `r nrow(d1)` species.
+Make the reduced dataset and plot survey frequency vs standard again, coded by species:
+```{r}
+reduced <- left_join(d1, the_data, by = "species_id")
+jf4 <- left_join(d1, jf3, by = "species_id")
+f3 <- ggplot(jf4, aes(p_central, freq, colour = species_name)) +
+  geom_jitter(aes(text = species_name), size = 3) + 
+  xlab("Standard frequency") + ylab("Survey frequency")+
+  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
+ggplotly(f3)
+
+```
+This looks much more useful. Community is now available in the interactive part.
+
+Summarise with a searchable table.
+
+
+
+
 
