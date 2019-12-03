@@ -116,8 +116,7 @@ fc_mg5a <- (left_join(fc_mg5a, std_freqs, by = c("community"="Community", "speci
             %>% select(-p_central))
 
 f4 <- ggplot(fc_mg5a, aes(std_freq, freq, colour = species_name)) +
-  # geom_jitter(aes(text = species_name), size = 3) + 
-  geom_pointrange(aes(ymin = CrI5, ymax = CrI95, text = species_name), size = 3) + 
+  geom_pointrange(aes(ymin = CrI5, ymax = CrI95), size = 3) + 
   scale_colour_brewer(palette="Paired") +
   xlab("Standard frequency") + ylab("Survey frequency") +
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), colour ="red")
@@ -131,11 +130,22 @@ Let's try the same thing but on an assembly basis:
 ```{r}
 fa_mg5a <- FrequencyByAssembly(d_mg5a)
 # Add standard frequencies
-fa_mg5a <- (left_join(fa_mg5a, std_freqs, by = c("community"="Community", "species_id")) 
+fa_mg5a <- (left_join(fa_mg5a, std_freqs, by = c("community"="Community", "species_id"))
+            %>% filter(!is.na(species_id))
+            %>% filter(!is.na(community))
             %>% mutate(std_freq = replace_na(p_central, 0)) 
             %>% select(-p_central))
 
+pd <- position_dodge(0.2)
+f5 <- ggplot(fa_mg5a, aes(std_freq, freq, colour = species_name)) +
+  geom_pointrange(aes(text = assembly_name, ymin = CrI5, ymax = CrI95), size = 1, position = pd) +
+  scale_colour_brewer(palette="Paired") +
+  xlab("Standard frequency") + ylab("Survey frequency") +
+  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), colour ="red")
+ggplotly(f5)
+
 ```
+Which certainly makes the point about the credibility intervals, but is not otherwise very useful, so have to think of another way to deal with assembly-level analysis.
 
 Summarise with a searchable table.
 
