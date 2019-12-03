@@ -99,7 +99,30 @@ f3 <- ggplot(jf4, aes(p_central, freq, colour = species_name)) +
 ggplotly(f3)
 
 ```
-This looks much more useful. Community is now available in the interactive part.
+This looks much more useful. Community is now available in the interactive part. Using 13 classes: on reflection (a) it might be better to use the top 12 classes (allowing to use ColorBrewer Paired Class 12 for the legend); and (b), ultimately to analyse by community (group, as used for poster BES2019) and select the top twelve species for each community.
+
+Doing (b) first: sort out mg5a data:
+```{r}
+
+cf <- head(the_data 
+           %>% filter(community == "MG5a")
+           %>% group_by(species_id) 
+           %>% summarise(hits = n()) %>% arrange(desc(hits)), 12)
+d_mg5a <- the_data %>% filter(community == "MG5a") %>% right_join(cf, by = "species_id")
+fc_mg5a <- FrequencyByCommunity(d_mg5a)
+# Add standard frequencies
+fc_mg5a <- (left_join(fc_mg5a, std_freqs, by = c("community"="Community", "species_id")) 
+            %>% mutate(std_freq = replace_na(p_central, 0)) 
+            %>% select(-p_central))
+
+f4 <- ggplot(fc_mg5a, aes(std_freq, freq, colour = species_name)) +
+  geom_jitter(aes(text = species_name), size = 3) + 
+  xlab("Standard frequency") + ylab("Survey frequency")+
+  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
+ggplotly(f4)
+
+```
+
 
 Summarise with a searchable table.
 
