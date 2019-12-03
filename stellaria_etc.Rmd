@@ -116,13 +116,26 @@ fc_mg5a <- (left_join(fc_mg5a, std_freqs, by = c("community"="Community", "speci
             %>% select(-p_central))
 
 f4 <- ggplot(fc_mg5a, aes(std_freq, freq, colour = species_name)) +
-  geom_jitter(aes(text = species_name), size = 3) + 
-  xlab("Standard frequency") + ylab("Survey frequency")+
-  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
+  # geom_jitter(aes(text = species_name), size = 3) + 
+  geom_pointrange(aes(ymin = CrI5, ymax = CrI95, text = species_name), size = 3) + 
+  scale_colour_brewer(palette="Paired") +
+  xlab("Standard frequency") + ylab("Survey frequency") +
+  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), colour ="red")
 ggplotly(f4)
 
 ```
 
+The credibility intervals are tiny because we are working with 200 - 300 hits and over 400 trials. It will be interesting to see how this changes on an assembly basis, and in communities where we have less data.
+
+Let's try the same thing but on an assembly basis:
+```{r}
+fa_mg5a <- FrequencyByAssembly(d_mg5a)
+# Add standard frequencies
+fa_mg5a <- (left_join(fa_mg5a, std_freqs, by = c("community"="Community", "species_id")) 
+            %>% mutate(std_freq = replace_na(p_central, 0)) 
+            %>% select(-p_central))
+
+```
 
 Summarise with a searchable table.
 
