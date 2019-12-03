@@ -131,7 +131,13 @@ FrequencyByAssembly <- function(t_d)
   data <- (left_join(data, assemblies, by = "assembly_id")
            %>% select(assembly_id, assembly_name, community, species_name, 
                       hits, trials, freq, CrI5, median, CrI95)) # reorder
-  return(data)
+  # Include species_id, dropped somewhere along the way
+  data <- (left_join(data, t_d 
+                     %>% select(species_id, species_name) 
+                     %>% distinct(), by = "species_name"))
+  data <- data %>% select(assembly_id, assembly_name, community, 
+                     species_id, species_name, hits, trials,freq, 
+                     CrI5, median,CrI95) 
 }
 
 # Return quadrat species count per community, average and measures of spread.
