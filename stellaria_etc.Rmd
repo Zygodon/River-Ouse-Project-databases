@@ -87,13 +87,13 @@ d1 <- (the_data
        %>% mutate(frac = cnt/nrow(the_data))
        %>% filter(frac >= 0.02))
 ```
-Removing those accounting for less than 0.2% of the records leaves `r nrow(d1)` species.
+Removing those accounting for less than 2% of the records leaves `r nrow(d1)` species.
 Make the reduced dataset and plot survey frequency vs standard again, coded by species:
 ```{r}
 reduced <- left_join(d1, the_data, by = "species_id")
 jf4 <- left_join(d1, jf3, by = "species_id")
 f3 <- ggplot(jf4, aes(p_central, freq, colour = species_name)) +
-  geom_jitter(aes(text = species_name), size = 3) + 
+  geom_jitter(aes(text = community), size = 3) + 
   xlab("Standard frequency") + ylab("Survey frequency")+
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
 ggplotly(f3)
@@ -147,7 +147,22 @@ ggplotly(f5)
 ```
 Which certainly makes the point about the credibility intervals, but is not otherwise very useful, so have to think of another way to deal with assembly-level analysis.
 
-Summarise with a searchable table.
+Single assembly is nice:
+```{r}
+f6 <- ggplot(head(fa_mg5a, 11), aes(std_freq, freq, colour = species_name)) +
+  geom_pointrange(aes(text = assembly_name, ymin = CrI5, ymax = CrI95), size = 1, position = pd) +
+  scale_colour_brewer(palette="Paired") +
+  xlab("Standard frequency") + ylab("Survey frequency") +
+  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), colour ="red")
+ggplotly(f6)
+
+```
+
+but really needs interactivity so we can search assembly-by-assembly. Bear in mind we have total `r nrow(the_data %>% select(assembly_id) %>% distinct())
+` assemblies, of which `r nrow(the_data %>% filter(community == "MG5a") %>% select(assembly_id) %>% distinct())
+` are MG5a.
+
+Looks like this will need special treatment with a Shiny app, beyond the scope of this exploratory notebook.
 
 
 
