@@ -1,6 +1,8 @@
 ---
 title: "Stellaria notebook"
 output: html_notebook
+fig.width: 6
+fig.height: 4
 ---
 # About
 
@@ -68,8 +70,7 @@ f2 <- ggplot(jf3, aes(p_central, freq, colour = community)) +
   geom_jitter(aes(text = species_name), size = 3) + #, name = "species_name")+
   xlab("Standard frequency") + ylab("Survey frequency")+
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
-ggplotly(f2)
-# print(f2)
+ggplotly(f2) %>% layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
 
 ```
 This gives a surprising number of species in strong disagrrement with the standard (we may ignore the big cluster near (0, 0) because of the way CrI5 is calculated - it can be very near zero, but not actually zero). Interactive plot: is this useful?
@@ -96,7 +97,7 @@ f3 <- ggplot(jf4, aes(p_central, freq, colour = species_name)) +
   geom_jitter(aes(text = community), size = 3) + 
   xlab("Standard frequency") + ylab("Survey frequency")+
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
-ggplotly(f3)
+ggplotly(f3) %>% layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
 
 ```
 This looks much more useful. Community is now available in the interactive part. Using 13 classes: on reflection (a) it might be better to use the top 12 classes (allowing to use ColorBrewer Paired Class 12 for the legend); and (b), ultimately to analyse by community (group, as used for poster BES2019) and select the top twelve species for each community.
@@ -120,7 +121,7 @@ f4 <- ggplot(fc_mg5a, aes(std_freq, freq, colour = species_name)) +
   scale_colour_brewer(palette="Paired") +
   xlab("Standard frequency") + ylab("Survey frequency") +
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), colour ="red")
-ggplotly(f4)
+ggplotly(f4) %>% layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
 
 ```
 
@@ -141,8 +142,8 @@ f5 <- ggplot(fa_mg5a, aes(std_freq, freq, colour = species_name)) +
   geom_pointrange(aes(text = assembly_name, ymin = CrI5, ymax = CrI95), size = 1, position = pd) +
   scale_colour_brewer(palette="Paired") +
   xlab("Standard frequency") + ylab("Survey frequency") +
-  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), colour ="red")
-ggplotly(f5)
+  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), colour ="red")  
+ggplotly(f5) %>% layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
 
 ```
 Which certainly makes the point about the credibility intervals, but is not otherwise very useful, so have to think of another way to deal with assembly-level analysis.
@@ -154,7 +155,7 @@ f6 <- ggplot(head(fa_mg5a, 11), aes(std_freq, freq, colour = species_name)) +
   scale_colour_brewer(palette="Paired") +
   xlab("Standard frequency") + ylab("Survey frequency") +
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), colour ="red")
-ggplotly(f6)
+  ggplotly(f6) %>% layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
 
 ```
 
