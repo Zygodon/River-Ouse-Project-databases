@@ -96,7 +96,7 @@ jf4 <- left_join(d1, jf3, by = "species_id")
 f3 <- ggplot(jf4, aes(p_central, freq, colour = species_name)) +
   geom_jitter(aes(text = community), size = 3) + 
   xlab("Standard frequency") + ylab("Survey frequency")+
-  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
+  geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), colour ="red")
 ggplotly(f3) %>% layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
 
 ```
@@ -117,7 +117,7 @@ fc_mg5a <- (left_join(fc_mg5a, std_freqs, by = c("community"="Community", "speci
             %>% select(-p_central))
 
 f4 <- ggplot(fc_mg5a, aes(std_freq, freq, colour = species_name)) +
-  geom_pointrange(aes(ymin = CrI5, ymax = CrI95), size = 3) + 
+  geom_pointrange(aes(ymin = CrI5, ymax = CrI95, text = community), size = 3) + 
   scale_colour_brewer(palette="Paired") +
   xlab("Standard frequency") + ylab("Survey frequency") +
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), colour ="red")
@@ -139,7 +139,7 @@ fa_mg5a <- (left_join(fa_mg5a, std_freqs, by = c("community"="Community", "speci
 
 pd <- position_dodge(0.2)
 f5 <- ggplot(fa_mg5a, aes(std_freq, freq, colour = species_name)) +
-  geom_pointrange(aes(text = assembly_name, ymin = CrI5, ymax = CrI95), size = 1, position = pd) +
+  geom_pointrange(aes(text = paste(assembly_name, community), ymin = CrI5, ymax = CrI95), size = 1, position = pd) +
   scale_colour_brewer(palette="Paired") +
   xlab("Standard frequency") + ylab("Survey frequency") +
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), colour ="red")  
