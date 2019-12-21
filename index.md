@@ -168,7 +168,8 @@ This table contains mesotrophic grassland species frequencies listed in British 
 For some analyses (specifically, the 2019 BES poster) we used a set of 22 species selected because each occurred with a frequency of V (0.8 - 1.0, mid-range 0.8) in at least one of the mesotrophic grassland standards of interest. The mg_stds_v table lists them.
 
 ## How the downloads could be used: examples.
-Some examples with R code available [here](Notebook.nb.html) and here:[Stellaria_etc](stellaria_etc.nb.html)
+Some examples with R code available [here](Notebook.nb.html) and here:[Stellaria_etc](stellaria_etc.nb.html).
+Some recent playing around with graphs and odds ratios, with possible evidence for short range associations between plants, [here](https://zygodon.github.io/graphs/igraph_notebook3.nb.html)
 
 ## Please acknowlege us.
 The material on these pages and the data available to user "guest" are covered by the [GNU General Public License](LICENSE.txt). If you use our data in your teaching or research, please acknowlege that by citing the River Ouse Project, University of Sussex, and referring to our website, [www.sussex.ac.uk/riverouse/](http://www.sussex.ac.uk/riverouse/).

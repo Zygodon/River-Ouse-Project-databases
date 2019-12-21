@@ -17,12 +17,13 @@ knitr::opts_chunk$set(echo = TRUE)
 The [River Ouse Project](http://www.sussex.ac.uk/riverouse/) was started by Dr Margaret Pilkington and colleagues in the Centre for Continuing Education, University of Sussex. Margaret is now retired with emeritus status and continues to run the project with a team of volunteers, in association with the University of Sussex.
 <center>
 ![](images/survey_sites2.png)
-Figure 1, Survey sites; green points: meadows; brown points: gills.
+
+Figure 1, Survey sites. Green points: meadows, brown points: gills.
 
 </center>
-The team does botanical surveys of streamside grassland and steep wooded valleys (gills) in the upper reaches of the Sussex Ouse, a short flashy river arising on the southern slopes of the Ashdown Forest, part of the High Weald AONB. Survey sites are chosen on the basis of species richness, potential for restoration and contribution to flood control, and surveyed using the sampling methods outlined in Rodwell, J S (1992. British Plant Communities, Volume 3, Grasslands and Montane Communities). Survey data are transferred from the paper record taken in the field to Excel spreadsheets, and from there after validation and cleaning into two MySQL (MariaDB) databases, meadows and gills.
+The team does botanical surveys of streamside grassland and steep wooded valleys (gills) in the upper reaches of the Sussex Ouse, a short flashy river arising on the southern slopes of the High Weald AONB (Area of Outstanding Natural Beauty). Survey sites are chosen on the basis of species richness, potential for restoration and contribution to flood control, and surveyed using the sampling methods outlined in Rodwell, J S (1992. British Plant Communities, Volume 3, Grasslands and Montane Communities). Survey data are transferred from the paper record taken in the field to Excel spreadsheets, and from there after validation and cleaning into two MySQL (MariaDB) databases, meadows and gills.
 
-The objective of this project is to make the databases publicly available, and to develop resources to make commonly needed derived quantities such as species frequencies readily accessible.
+My objective here is to make the databases publicly available, and to develop resources to make commonly needed derived quantities such as species frequencies readily accessible.
 
 ## The meadows database.
 
@@ -123,7 +124,8 @@ This table contains mesotrophic grassland species frequencies listed in British 
 For some analyses (specifically, the 2019 BES poster) we used a set of 22 species selected because each occurred with a frequency of V (0.8 - 1.0, mid-range 0.8) in at least one of the mesotrophic grassland standards of interest. The mg_stds_v table lists them.
 
 ## How the downloads could be used: examples.
-Some examples with R code available [here](Notebook.nb.html) and here:[Stellaria_etc](stellaria_etc.nb.html)
+Some examples with R code available [here](Notebook.nb.html) and here:[Stellaria_etc](stellaria_etc.nb.html).
+Some recent playing around with graphs and odds ratios, with possible evidence for short range associations between plants, [here](https://zygodon.github.io/graphs/igraph_notebook3.nb.html)
 
 ## Please acknowlege us.
 The material on these pages and the data available to user "guest" are covered by the [GNU General Public License](LICENSE.txt). If you use our data in your teaching or research, please acknowlege that by citing the River Ouse Project, University of Sussex, and referring to our website, [www.sussex.ac.uk/riverouse/](http://www.sussex.ac.uk/riverouse/).
