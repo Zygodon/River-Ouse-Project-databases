@@ -125,11 +125,9 @@ For some analyses (specifically, the 2019 BES poster) we used a set of 22 specie
 
 ## How the downloads could be used: examples.
 Some examples with R code available [here](Notebook.nb.html) and here:[Stellaria_etc](stellaria_etc.nb.html).
-<<<<<<< HEAD
+
 Some recent playing around with graphs and odds ratios, with possible evidence for short range associations between plants, [here](https://zygodon.github.io/graphs/igraph_notebook3.nb.html)
-=======
-Some recent playing around with graphs and odds ratios, with possible evidence for short range associations between plants, [here](igraph_notebook3.nb.html)
->>>>>>> 7379f159098fe5bb8b9bd63b2c2f9d9edd0c964d
+
 
 ## Please acknowlege us.
 The material on these pages and the data available to user "guest" are covered by the [GNU General Public License](LICENSE.txt). If you use our data in your teaching or research, please acknowlege that by citing the River Ouse Project, University of Sussex, and referring to our website, [www.sussex.ac.uk/riverouse/](http://www.sussex.ac.uk/riverouse/).
