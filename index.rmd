@@ -39,7 +39,6 @@ The database can be accessed from R or other programming language. You can use a
 
 ```{r message = FALSE, warning = FALSE}
 library("RMySQL")
-# mydb = dbConnect(MySQL(), user='guest', password = 'guest', dbname='meadows', port = 3306, host='sxouse.ddns.net')
 mydb = dbConnect(MySQL(), user='sql2298149', password='cL4*hG4%', dbname='sql2298149', port=3306, host='sql2.freemysqlhosting.net')
 rs1 = dbSendQuery(mydb, "select assembly_name, community from assemblies where community is not null;")
 data <- fetch(rs1, n=10)

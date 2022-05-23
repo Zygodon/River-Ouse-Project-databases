@@ -439,7 +439,6 @@ from the NVC standards and may be used as ancillary reference.</p>
 <p>The database can be accessed from R or other programming language.
 You can use a simple query:</p>
 <pre class="r"><code>library(&quot;RMySQL&quot;)
-# mydb = dbConnect(MySQL(), user=&#39;guest&#39;, password = &#39;guest&#39;, dbname=&#39;meadows&#39;, port = 3306, host=&#39;sxouse.ddns.net&#39;)
 mydb = dbConnect(MySQL(), user=&#39;sql2298149&#39;, password=&#39;cL4*hG4%&#39;, dbname=&#39;sql2298149&#39;, port=3306, host=&#39;sql2.freemysqlhosting.net&#39;)
 rs1 = dbSendQuery(mydb, &quot;select assembly_name, community from assemblies where community is not null;&quot;)
 data &lt;- fetch(rs1, n=10)
