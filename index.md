@@ -1,7 +1,7 @@
 ---
 title: "Meadows database"
 author: "John Pilkington"
-date: "19/11/2019"
+date: "23/05/2022"
 output: 
   html_document: 
     keep_md: yes
@@ -50,7 +50,8 @@ The database can also be accessed from R or other programming language. You can 
 
 ```r
 library("RMySQL")
-mydb = dbConnect(MySQL(), user='guest', password = 'guest', dbname='meadows', port = 3306, host='sxouse.ddns.net')
+# mydb = dbConnect(MySQL(), user='guest', password = 'guest', dbname='meadows', port = 3306, host='sxouse.ddns.net')
+mydb = dbConnect(MySQL(), user='sql2298149', password='cL4*hG4%', dbname='sql2298149', port=3306, host='sql2.freemysqlhosting.net')
 rs1 = dbSendQuery(mydb, "select assembly_name, community from assemblies where community is not null;")
 data <- fetch(rs1, n=10)
 dbDisconnect(mydb)
@@ -92,7 +93,8 @@ where community in ('MG5a', 'MG5c', 'MG6a', 'MG6b')
 # and species.species_name = 'Lolium_perenne'
 group by assemblies_id;" 
 
-mydb = dbConnect(MySQL(), user='guest', password = 'guest', dbname='meadows', port = 3306, host='sxouse.ddns.net')
+# mydb = dbConnect(MySQL(), user='guest', password = 'guest', dbname='meadows', port = 3306, host='sxouse.ddns.net')
+mydb = dbConnect(MySQL(), user='sql2298149', password='cL4*hG4%', dbname='sql2298149', port=3306, host='sql2.freemysqlhosting.net')
 rs1 = dbSendQuery(mydb, q)
 data <- fetch(rs1, n=10)
 dbDisconnect(mydb)
