@@ -14,12 +14,13 @@ dbDisconnectAll <- function(){
 query <- function(q)
 {
   # Remote DB with password - works Ok but table mg_standards6 is not available on PI. Should update.
-  con <- dbConnect(MySQL(), 
-                   user  = "guest",
-                   password    = "guest",
-                   dbname="meadows",
-                   port = 3306,
-                   host   = "sxouse.ddns.net")
+  con <- dbConnect(MySQL(),
+        user='sql2298149', 
+        password='cL4*hG4%', 
+        dbname='sql2298149', 
+        port=3306, 
+        host='sql2.freemysqlhosting.net')
+  
   rs1 = dbSendQuery(con, q)
   return(as_tibble(fetch(rs1, n=-1)))
   dbDisconnectAll()
@@ -30,13 +31,12 @@ GetTheData <-  function()
 {
   # GET DATA FROM DB
   # Remote DB with password - works Ok but table mg_standards6 is not available on PI. Should update.
-  con <- dbConnect(MySQL(), 
-                   user  = "guest",
-                   password    = "guest",
-                   dbname="meadows",
-                   port = 3306,
-                   host   = "sxouse.ddns.net")
-  
+  con <- dbConnect(MySQL(),
+                   user='sql2298149', 
+                   password='cL4*hG4%', 
+                   dbname='sql2298149', 
+                   port=3306, 
+                   host='sql2.freemysqlhosting.net')
   
   q <- sprintf('select assembly_id, assembly_name, quadrat_count, community, quadrat_id, visit_date, records_id, species.species_id, 
     species.species_name from assemblies
@@ -176,7 +176,6 @@ AssemblySpeciesCounts <- function(t_d) # the_data
   return(data)
   }
 
-
 ########################## MAIN ##############################
 # Following useful for testing the functions. Comment out in general
 # GET DATA FROM DB
@@ -191,5 +190,5 @@ AssemblySpeciesCounts <- function(t_d) # the_data
 
 # General procedure for sending an SQL query
 
-q <- "SELECT Community, species_id, p_central FROM meadows.mg_rodwell where Community like 'MG%';"
-t <- query(q)
+# q <- "SELECT Community, species_id, p_central FROM meadows.mg_rodwell where Community like 'MG%';"
+# t <- query(q)
