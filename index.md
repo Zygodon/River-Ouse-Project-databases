@@ -32,20 +32,8 @@ Figure 2. Meadows database schematic. The tables joined by constraint links cont
 
 ## Database access.
 
-### phpMyAdmin.
-Public users may log into the database with user name "guest", using password "guest".
-
-Guest access to the database can be obtained here:
-<http://sxouse.ddns.net:82/phpmyadmin/>
-
-Log in as "guest" with password "guest".
-
-<img src="images/phpMyAdmin.png" width="300px" />
-
-Select the meadows database. Data may be retrieved using SQL searches.
-
 ### Access from R.
-The database can also be accessed from R or other programming language. You can use a simple query:
+The database can be accessed from R or other programming language. You can use a simple query:
 
 
 ```r
@@ -93,7 +81,6 @@ where community in ('MG5a', 'MG5c', 'MG6a', 'MG6b')
 # and species.species_name = 'Lolium_perenne'
 group by assemblies_id;" 
 
-# mydb = dbConnect(MySQL(), user='guest', password = 'guest', dbname='meadows', port = 3306, host='sxouse.ddns.net')
 mydb = dbConnect(MySQL(), user='sql2298149', password='cL4*hG4%', dbname='sql2298149', port=3306, host='sql2.freemysqlhosting.net')
 rs1 = dbSendQuery(mydb, q)
 data <- fetch(rs1, n=10)
