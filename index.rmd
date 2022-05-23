@@ -1,6 +1,6 @@
 ---
 title: "Meadows database"
-author: "John Pilkington"
+author: "John B Pilkington"
 date: "23/05/2022"
 output: 
   html_document: 
