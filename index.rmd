@@ -84,7 +84,7 @@ The Meadows DB recovery app reconstructs an approximation to the original spread
 
 ### Access from Shiny App: Species Explorer
 The on-line app calculates species frequencies and counts by community or assembly. It's under development, more functionality to be added.
-[Click here to run it](https://sussexouse.shinyapps.io/species_explorer/)
+[Click here to run it](https://sussexouse.shinyapps.io/Species_explorer/)
 
 ## Tables.
 
