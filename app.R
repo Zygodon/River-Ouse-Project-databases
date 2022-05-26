@@ -12,9 +12,10 @@ ui <- fluidPage(
         
         # Sidebar panel for inputs ----
         sidebarPanel(
+            p("Please wait while the raw data extract is displayed - takes a few seconds."),
+            p(),
             p("You can download all the raw data in a single .csv file, but note this downloads
               approximately 1.5 Mb data, a little over 21000 rows in Excel."),
-            # Button
             downloadButton("downloadAll", "Download all"),
             p(),
             p("Or, you can download smaller datasets for which species frequencies have 
@@ -34,7 +35,7 @@ ui <- fluidPage(
                                     "Species counts by assembly")),
             
             # Button
-            downloadButton("downloadData", "Download"),
+            downloadButton("downloadData", "Download digest"),
             p("Explanation of non-obvious columns:"),
             tags$ul(
               tags$li("hits: number of times species has been found"), 
@@ -44,14 +45,16 @@ ui <- fluidPage(
               tags$li("median: 50% quantile of the underlying distribution"),
               tags$li("CrI95: 95% quantile of the underlying distribution"),
             ),
-            
-        ),
+            p(),
+            p("You may download the R code for the data extract and digests here:"),
+            a(href="db_extract.R", "db_extract.R", download=NA, target="_blank")
+        ), # End of sidebar panel layout
         
-        # Main panel for displaying outputs ----
+        # Main panel for displaying outputs; just has the table in it.
         mainPanel(
-            
-            tableOutput("table")
-            
+            shinycssloaders::withSpinner(
+                tableOutput("table")
+            )
         )
         
     )
@@ -60,6 +63,10 @@ ui <- fluidPage(
 # Define server logic to display and download selected file ----
 server <- function(input, output) {
     the_data <- GetTheData()
+    # Table of all the data ----
+    output$table <- renderTable({
+      datasetInput()
+    })
     # Downloadable csv of all data ----
     output$downloadAll <- downloadHandler(
       filename = function() {
@@ -70,11 +77,11 @@ server <- function(input, output) {
       }
     )
     
-    
     # Reactive value for selected dataset ----
     datasetInput <- reactive({
         switch(input$dataset,
-               "None" ={},
+               # "None" ={},
+               "None" = AllTheData(the_data),
                "Gross species frequencies" = GrossFrequency(the_data),
                "Species frequencies by community" = FrequencyByCommunity(the_data),
                "Species frequencies by assembly" = FrequencyByAssembly(the_data),
@@ -90,7 +97,6 @@ server <- function(input, output) {
     
     # Downloadable csv of selected dataset ----
     output$downloadData <- downloadHandler(
-      # filename = function() {
       file = function() {
           paste(input$dataset, ".csv", sep = "")
         },
@@ -98,6 +104,7 @@ server <- function(input, output) {
             write.csv(datasetInput(), file, row.names = FALSE)
         }
     )
+    
  dbDisconnectAll() # Ensure all handles closed on exit  
 }
 
