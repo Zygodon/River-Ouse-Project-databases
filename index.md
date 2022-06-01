@@ -126,7 +126,7 @@ Single tables can be imported into Excel using the MySQL for Excel add-in, use t
 
 ### Access from Shiny App: Meadows DB recovery
 The Meadows DB recovery app reconstructs an approximation to the original spreadsheets from the meadows surveys, and also gives the name of the Excel file from which the data were entered into the DB. This should be useful to the volunteer team when trying to locate the original files.
-[Click here to run it](https://sussexouse.shinyapps.io/meadows_DB_recovery/)
+[Click here to run it](https://sussexouse.shinyapps.io/the_meadows_DB_recovery_app_2_1/)
 
 ### Access from Shiny App: Species Explorer
 The on-line app summarises species frequencies and counts by community or assembly.  You can download the summaries, and the raw extract from which they were calculated, as .csv files suitable for import into a spreadsheet. You can also download the R code used to make the summaries.
