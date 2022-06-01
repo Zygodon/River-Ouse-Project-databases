@@ -4,7 +4,7 @@ output:
   html_document: default
 ---
 # River-Ouse-Project-databases
-A step towards public access for the River Ouse Proect databases (gills; meadows).
+Public access facilities for the River Ouse Proect databases (gills; meadows).
 
 The River Ouse Project was started by Dr Margaret Pilkington and colleagues in the Centre for Continuing Education, University of Sussex. Margaret is now retired with emeritus status and continues to run the project with a team of volunteers, in association with the University of Sussex.
 
