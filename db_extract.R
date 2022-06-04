@@ -14,11 +14,17 @@ dbDisconnectAll <- function(){
 query <- function(q)
 {
   # Remote DB with password - works Ok but table mg_standards6 is not available on PI. Should update.
+  # con = dbConnect(MySQL(), 
+  #                 user='guest',
+  #                 password = 'guest',
+  #                 dbname='meadows',
+  #                 port = 3306, host='sxouse.ddns.net')
+  
   con = dbConnect(MySQL(), 
-        user='guest',
-        password = 'guest',
-        dbname='meadows',
-        port = 3306, host='sxouse.ddns.net')
+                  user='root',
+                  password = 'Mysql130641',
+                  dbname='meadows',
+                  port = 3306, host='127.0.0.1')
   
   rs1 = dbSendQuery(con, q)
   return(as_tibble(fetch(rs1, n=-1)))
@@ -30,21 +36,27 @@ GetTheData <-  function()
 {
   # GET DATA FROM DB
   # Remote DB with password - works Ok but table mg_standards6 is not available on PI. Should update.
-  con <- dbConnect(MySQL(),
-                   user='sql2298149', 
-                   password='cL4*hG4%', 
-                   dbname='sql2298149', 
-                   port=3306, 
-                   host='sql2.freemysqlhosting.net')
+  # con <- dbConnect(MySQL(),
+  #                  user='sql2298149', 
+  #                  password='cL4*hG4%', 
+  #                  dbname='sql2298149', 
+  #                  port=3306, 
+  #                  host='sql2.freemysqlhosting.net')
   
-  q <- sprintf('select assembly_id, assembly_name, quadrat_count, community, quadrat_id, visit_date, records_id, species.species_id, 
-    species.species_name from assemblies
-      join quadrats on quadrats.assembly_id = assemblies_id
+  con = dbConnect(MySQL(), 
+                  user='root',
+                  password = 'Mysql130641',
+                  dbname='meadows',
+                  port = 3306, host='127.0.0.1')
+  
+  q <- sprintf('select survey_id, assembly_name, quadrat_count, community, quadrat_id, visit_date, records_id, species.species_id, 
+    species.species_name from surveys
+      join quadrats on quadrats.survey_id = surveys_id
       join visit_dates on quadrats.vd_id = visit_dates.vds_id
       join records on records.quadrat_id = quadrats_id
       join species on species.species_id = records.species_id
-    # Two assemblies have 0 quadrat count; exclude A.capillaris_stolonifera; exclude 
-    # some odd assemblies with no assigned community
+    # Two surveys have 0 quadrat count; exclude A.capillaris_stolonifera; exclude 
+    # some odd surveys with no assigned community
     where quadrat_count > 0 and species.species_id != 4 and community is not null;') 
   # NOTE: this extract includes "MG5", i.e. some MG5 communities where the team have not decided
   # on a sub-group.
@@ -89,58 +101,58 @@ FrequencyByCommunity <- function(t_d) # the_data
                         %>%  mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
 }
 
-# Return species frequencies by assembly, average and measures of spread
-FrequencyByAssembly <- function(t_d)
+# Return species frequencies by survey, average and measures of spread
+FrequencyBysurvey <- function(t_d)
 {
-  d <- t_d %>% select(assembly_id, species_id, species_name)
-  # Hits for each species in each assembly
-  species_hits <- (d %>% group_by(assembly_id, species_name) 
+  d <- t_d %>% select(survey_id, species_id, species_name)
+  # Hits for each species in each survey
+  species_hits <- (d %>% group_by(survey_id, species_name) 
                    %>% summarise(hits = n()))
-  # Trials (quadrats) - quadrat count for each assembly (is indepenedent of species!)
-  t <- (t_d %>% select(assembly_id, quadrat_id)
-        %>% group_by(assembly_id)
+  # Trials (quadrats) - quadrat count for each survey (is indepenedent of species!)
+  t <- (t_d %>% select(survey_id, quadrat_id)
+        %>% group_by(survey_id)
         %>% summarise(trials = n_distinct(quadrat_id)))
-  # Frequency of each species in each assembly, hits/trials
-  species_freq <- (left_join(species_hits, t, by = "assembly_id")
+  # Frequency of each species in each survey, hits/trials
+  species_freq <- (left_join(species_hits, t, by = "survey_id")
                    %>% mutate(freq = hits/trials)
                    %>% mutate(CrI5 = qbeta(0.05, hits+1, 1+trials-hits))
                    %>% mutate(median = qbeta(0.5, hits+1, 1+trials-hits)) # For comparison with frequency as hits/trials
                    %>% mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
   # Include community
-  nvcs <- t_d %>% select(assembly_id, community) %>% distinct()
-  data <- left_join(species_freq, nvcs, by = "assembly_id") 
+  nvcs <- t_d %>% select(survey_id, community) %>% distinct()
+  data <- left_join(species_freq, nvcs, by = "survey_id") 
   # Include assembly_name
-  assemblies <- t_d %>%  select(assembly_id, assembly_name) %>% distinct()
-  data <- (left_join(data, assemblies, by = "assembly_id")
-           %>% select(assembly_id, assembly_name, community, species_name, 
+  surveys <- t_d %>%  select(survey_id, assembly_name) %>% distinct()
+  data <- (left_join(data, surveys, by = "survey_id")
+           %>% select(survey_id, assembly_name, community, species_name, 
                       hits, trials, freq, CrI5, median, CrI95)) # reorder
-  d <- the_data %>% select(assembly_id, species_id, species_name)
-  # Hits for each species in each assembly
-  species_hits <- (d %>% group_by(assembly_id, species_name) 
+  d <- the_data %>% select(survey_id, species_id, species_name)
+  # Hits for each species in each survey
+  species_hits <- (d %>% group_by(survey_id, species_name) 
                    %>% summarise(hits = n()))
-  # Trials (quadrats) - quadrat count for each assembly (is indepenedent of species!)
-  t <- (the_data %>% select(assembly_id, quadrat_id)
-        %>% group_by(assembly_id)
+  # Trials (quadrats) - quadrat count for each survey (is indepenedent of species!)
+  t <- (the_data %>% select(survey_id, quadrat_id)
+        %>% group_by(survey_id)
         %>% summarise(trials = n_distinct(quadrat_id)))
-  # Frequency of each species in each assembly, hits/trials
-  species_freq <- (left_join(species_hits, t, by = "assembly_id")
+  # Frequency of each species in each survey, hits/trials
+  species_freq <- (left_join(species_hits, t, by = "survey_id")
                    %>% mutate(freq = hits/trials)
                    %>% mutate(CrI5 = qbeta(0.05, hits+1, 1+trials-hits))
                    %>% mutate(median = qbeta(0.5, hits+1, 1+trials-hits)) # For comparison with frequency as hits/trials
                    %>% mutate(CrI95 = qbeta(0.95, hits+1, 1+trials-hits)))
   # Include community
-  nvcs <- t_d %>% select(assembly_id, community) %>% distinct()
-  data <- left_join(species_freq, nvcs, by = "assembly_id") 
+  nvcs <- t_d %>% select(survey_id, community) %>% distinct()
+  data <- left_join(species_freq, nvcs, by = "survey_id") 
   # Include assembly_name
-  assemblies <- t_d %>%  select(assembly_id, assembly_name) %>% distinct()
-  data <- (left_join(data, assemblies, by = "assembly_id")
-           %>% select(assembly_id, assembly_name, community, species_name, 
+  surveys <- t_d %>%  select(survey_id, assembly_name) %>% distinct()
+  data <- (left_join(data, surveys, by = "survey_id")
+           %>% select(survey_id, assembly_name, community, species_name, 
                       hits, trials, freq, CrI5, median, CrI95)) # reorder
   # Include species_id, dropped somewhere along the way
   data <- (left_join(data, t_d 
                      %>% select(species_id, species_name) 
                      %>% distinct(), by = "species_name"))
-  data <- data %>% select(assembly_id, assembly_name, community, 
+  data <- data %>% select(survey_id, assembly_name, community, 
                      species_id, species_name, hits, trials,freq, 
                      CrI5, median,CrI95) 
 }
@@ -162,22 +174,22 @@ CommunitySpeciesCounts <- function(t_d) # the_data
   return(data)
 }
 
-# Return quadrat species count per assembly, average and measures of spread
-AssemblySpeciesCounts <- function(t_d) # the_data
+# Return quadrat species count per survey, average and measures of spread
+surveySpeciesCounts <- function(t_d) # the_data
 {
   # 1. Species counts per quadrat
   sp_cnt <- (t_d %>% select(quadrat_id, species_id)
              %>% group_by(quadrat_id) %>% summarise(sp_count = n()))
   
-  # 2. Join assemblies, summarise - mean and measures of spread
-  assemblies <- t_d %>% select(assembly_id, quadrat_id) %>% distinct()
-  d1 <- left_join(sp_cnt, assemblies, by = "quadrat_id")
-  d2 <- d1 %>% group_by(assembly_id) %>% summarise(mean_species_count = mean(sp_count), sd = sd(sp_count), CrI5 = quantile(sp_count, 0.05), median = median(sp_count), CrI95 = quantile(sp_count, 0.95))
+  # 2. Join surveys, summarise - mean and measures of spread
+  surveys <- t_d %>% select(survey_id, quadrat_id) %>% distinct()
+  d1 <- left_join(sp_cnt, surveys, by = "quadrat_id")
+  d2 <- d1 %>% group_by(survey_id) %>% summarise(mean_species_count = mean(sp_count), sd = sd(sp_count), CrI5 = quantile(sp_count, 0.05), median = median(sp_count), CrI95 = quantile(sp_count, 0.95))
   
   # 3.Add assembly_name
-  ass_names <- t_d %>% select(assembly_name, assembly_id) %>% distinct()
-  data <- (left_join(d2, ass_names, by = "assembly_id") 
-           %>% select(assembly_id, assembly_name, mean_species_count, sd, CrI5, median, CrI95))
+  ass_names <- t_d %>% select(assembly_name, survey_id) %>% distinct()
+  data <- (left_join(d2, ass_names, by = "survey_id") 
+           %>% select(survey_id, assembly_name, mean_species_count, sd, CrI5, median, CrI95))
   return(data)
   }
 
@@ -189,9 +201,9 @@ AssemblySpeciesCounts <- function(t_d) # the_data
 # Make various digests of the_data the_data but pass a selection, e.g. community, year, species.
 # species_freq <-  GrossFrequency(the_data)
 # freq_by_community <- FrequencyByCommunity(the_data)
-# freq_by_assembly <- FrequencyByAssembly(the_data)
+# freq_by_survey <- FrequencyBysurvey(the_data)
 # community_species_counts <- CommunitySpeciesCounts(the_data)
-# assembly_species_counts <- AssemblySpeciesCounts(the_data)
+# survey_species_counts <- surveySpeciesCounts(the_data)
 
 # General procedure for sending an SQL query
 

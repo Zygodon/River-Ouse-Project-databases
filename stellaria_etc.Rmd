@@ -1,6 +1,8 @@
 ---
 title: "Stellaria notebook"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 fig.width: 6
 fig.height: 4
 ---
@@ -16,19 +18,19 @@ source("db_extract.R")
 the_data <- GetTheData()
 ```
 
-And we're going to need species_frequency by assembly; but maybe could decide to go by community?
+And we're going to need species_frequency by survey; but maybe could decide to go by community?
 ```{r}
-frequency_by_assembly <- FrequencyByAssembly(the_data)
+frequency_by_survey <- FrequencyBysurvey(the_data)
 frequency_by_community <- FrequencyByCommunity(the_data)
 ```
-Let's plot mean frequency by assembly vs frequency by community for *Stellaria graminea*:
+Let's plot mean frequency by survey vs frequency by community for *Stellaria graminea*:
 ```{r}
-fba <- frequency_by_assembly %>% select(assembly_id, species_name, community, freq)
+fba <- frequency_by_survey %>% select(survey_id, species_name, community, freq)
 fbc <- frequency_by_community %>% select(species_name,community, freq)
 jf <- left_join(fbc, fba, by = c("community", "species_name")) %>% filter(species_name == "Stellaria_graminea" & grepl("MG", community))
 f <- ggplot(jf, aes(freq.x, freq.y, colour = community)) +
   geom_point()+
-  xlab("frequency by community") + ylab("frequency by assembly")+
+  xlab("frequency by community") + ylab("frequency by survey")+
   geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1, colour ="red"))
 print(f)
 ```
@@ -36,7 +38,7 @@ print(f)
 
 ```{r}
 ```
-This is for *S. graminea* and the MG communities. So (a) there are lots more assemblies than there are communities (of course) and (b) frequency by assembly tends to be larger than frequency by community; aggregating over community has smoothed out a lot of variation. My feeling is that it will be more illuminating to eliminate the assembly variable to start with, we can explore variability with assembly later.
+This is for *S. graminea* and the MG communities. So (a) there are lots more surveys than there are communities (of course) and (b) frequency by survey tends to be larger than frequency by community; aggregating over community has smoothed out a lot of variation. My feeling is that it will be more illuminating to eliminate the survey variable to start with, we can explore variability with survey later.
 
 Next question: how to compare with standard values. Explore select into table mg_rodwell in the meadows database ... in which we have columns community, species_id (and name, but not to be relied on) and p_central, the central frequency of the categories I .. V.
 
@@ -125,11 +127,11 @@ ggplotly(f4) %>% layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
 
 ```
 
-The credibility intervals are tiny because we are working with 200 - 300 hits and over 400 trials. It will be interesting to see how this changes on an assembly basis, and in communities where we have less data.
+The credibility intervals are tiny because we are working with 200 - 300 hits and over 400 trials. It will be interesting to see how this changes on an survey basis, and in communities where we have less data.
 
-Let's try the same thing but on an assembly basis:
+Let's try the same thing but on an survey basis:
 ```{r}
-fa_mg5a <- FrequencyByAssembly(d_mg5a)
+fa_mg5a <- FrequencyBysurvey(d_mg5a)
 # Add standard frequencies
 fa_mg5a <- (left_join(fa_mg5a, std_freqs, by = c("community"="Community", "species_id"))
             %>% filter(!is.na(species_id))
@@ -146,9 +148,9 @@ f5 <- ggplot(fa_mg5a, aes(std_freq, freq, colour = species_name)) +
 ggplotly(f5) %>% layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
 
 ```
-Which certainly makes the point about the credibility intervals, but is not otherwise very useful, so have to think of another way to deal with assembly-level analysis.
+Which certainly makes the point about the credibility intervals, but is not otherwise very useful, so have to think of another way to deal with survey-level analysis.
 
-Single assembly is nice:
+Single survey is nice:
 ```{r}
 f6 <- ggplot(head(fa_mg5a, 11), aes(std_freq, freq, colour = species_name)) +
   geom_pointrange(aes(text = assembly_name, ymin = CrI5, ymax = CrI95), size = 1, position = pd) +
@@ -159,8 +161,8 @@ f6 <- ggplot(head(fa_mg5a, 11), aes(std_freq, freq, colour = species_name)) +
 
 ```
 
-but really needs interactivity so we can search assembly-by-assembly. Bear in mind we have total `r nrow(the_data %>% select(assembly_id) %>% distinct())
-` assemblies, of which `r nrow(the_data %>% filter(community == "MG5a") %>% select(assembly_id) %>% distinct())
+but really needs interactivity so we can search survey-by-survey. Bear in mind we have total `r nrow(the_data %>% select(survey_id) %>% distinct())
+` surveys, of which `r nrow(the_data %>% filter(community == "MG5a") %>% select(survey_id) %>% distinct())
 ` are MG5a.
 
 Looks like this will need special treatment with a Shiny app, beyond the scope of this exploratory notebook.
