@@ -124,7 +124,7 @@ This table contains mesotrophic grassland species frequencies listed in British 
 For some analyses (specifically, the 2019 BES poster) we used a set of 22 species selected because each occurred with a frequency of V (0.8 - 1.0, mid-range 0.8) in at least one of the mesotrophic grassland standards of interest. The mg_stds_v table lists them.
 
 ## How the downloads could be used: examples.
-Some examples with R code available [here](Notebook.nb.html) and here:[Stellaria_etc](stellaria_etc.html).
+Some examples with R code available here: [Comparison with NVC standard counts](NVC-standards_comparison.html) and here:[Stellaria_etc](stellaria_etc.html).
 
 An examination of meadow plant associations [here](https://zygodon.github.io/graphs/MeadowPlantAssociations_2.nb.html)
 
