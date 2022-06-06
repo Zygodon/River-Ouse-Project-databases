@@ -13,18 +13,12 @@ dbDisconnectAll <- function(){
 # General SQL query
 query <- function(q)
 {
-  # Remote DB with password - works Ok but table mg_standards6 is not available on PI. Should update.
-  # con = dbConnect(MySQL(), 
-  #                 user='guest',
-  #                 password = 'guest',
-  #                 dbname='meadows',
-  #                 port = 3306, host='sxouse.ddns.net')
-  
-  con = dbConnect(MySQL(), 
-                  user='root',
-                  password = 'Mysql130641',
+  # Remote DB with password - for MySQL
+  con = dbConnect(MySQL(),
+                  user='guest',
+                  password = 'guest',
                   dbname='meadows',
-                  port = 3306, host='127.0.0.1')
+                  port = 3306, host='sxouse.ddns.net')
   
   rs1 = dbSendQuery(con, q)
   return(as_tibble(fetch(rs1, n=-1)))
@@ -34,20 +28,11 @@ query <- function(q)
 # Load the database
 GetTheData <-  function()
 {
-  # GET DATA FROM DB
-  # Remote DB with password - works Ok but table mg_standards6 is not available on PI. Should update.
-  # con <- dbConnect(MySQL(),
-  #                  user='sql2298149', 
-  #                  password='cL4*hG4%', 
-  #                  dbname='sql2298149', 
-  #                  port=3306, 
-  #                  host='sql2.freemysqlhosting.net')
-  
-  con = dbConnect(MySQL(), 
-                  user='root',
-                  password = 'Mysql130641',
+  con = dbConnect(MySQL(),
+                  user='guest',
+                  password = 'guest',
                   dbname='meadows',
-                  port = 3306, host='127.0.0.1')
+                  port = 3306, host='sxouse.ddns.net')
   
   q <- sprintf('select survey_id, assembly_name, quadrat_count, community, quadrat_id, visit_date, records_id, species.species_id, 
     species.species_name from surveys
@@ -196,10 +181,10 @@ surveySpeciesCounts <- function(t_d) # the_data
 ########################## MAIN ##############################
 # Following useful for testing the functions. Comment out in general
 # GET DATA FROM DB
-# the_data <- GetTheData()
+the_data <- GetTheData()
 # 
 # Make various digests of the_data the_data but pass a selection, e.g. community, year, species.
-# species_freq <-  GrossFrequency(the_data)
+species_freq <-  GrossFrequency(the_data)
 # freq_by_community <- FrequencyByCommunity(the_data)
 # freq_by_survey <- FrequencyBysurvey(the_data)
 # community_species_counts <- CommunitySpeciesCounts(the_data)
