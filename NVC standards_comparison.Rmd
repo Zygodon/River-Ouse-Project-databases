@@ -86,7 +86,7 @@ stds <- tribble(
 
 Instructions about how to access the database using the phpMyAdmin interface can be found [here](https://zygodon.github.io/River-Ouse-Project-databases/).
 
-## Species counts by quadrat and assembly.
+## Species counts by quadrat and survey.
 
 The following code demonstrates using data downloaded from the database to construct boxplots showing species counts on a per-quadrat (sample) basis, or per uniform vegetation stand (assembly).
 
