@@ -1,7 +1,7 @@
 ---
 title: "Meadows database"
 author: "John Pilkington"
-date: "26/05/2022"
+date: "6/06/2022"
 output: 
   html_document: 
     keep_md: yes
@@ -44,7 +44,7 @@ mydb <- dbConnect(MySQL(),
                    dbname="meadows",
                    port = 3306,
                    host   = "sxouse.ddns.net")
-rs1 = dbSendQuery(mydb, "select assembly_name, community from assemblies where community is not null;")
+rs1 = dbSendQuery(mydb, "select assembly_name, community from surveys where community is not null;")
 data <- fetch(rs1, n=10)
 dbDisconnect(mydb)
 ```
@@ -77,13 +77,13 @@ Or more complicated joins:
 ```r
 library("RMySQL")
 q <- "select assembly_name, community, count(distinct(species.species_id))
-from assemblies
-join quadrats on quadrats.assembly_id = assemblies_id
+from surveys
+join quadrats on quadrats.survey_id = surveys_id
 join records on records.quadrat_id = quadrats_id
 join species on species.species_id = records.species_id
 where community in ('MG5a', 'MG5c', 'MG6a', 'MG6b')
 # and species.species_name = 'Lolium_perenne'
-group by assemblies_id;" 
+group by surveys_id;" 
 
 mydb <- dbConnect(MySQL(), 
                    user  = "guest",
@@ -147,7 +147,7 @@ SELECT species_name FROM species JOIN records ON records.species_id = species.sp
 If you wanted to.
 
 ### Quadrats.
-The sampling unit for the project is a quadrat. Quadrats belong to assemblies (see next paragraph for a definition), identified by an assembly_id which points to the assembly to which the quadrat belongs. Every quadrat has a unique quadrat_id that can be used to find the records belonging to it, that is, the plants found in that quadrat. 
+The sampling unit for the project is a quadrat. Quadrats belong to surveys (see next paragraph for a definition), identified by an survey_id which points to the survey to which the quadrat belongs. Every quadrat has a unique quadrat_id that can be used to find the records belonging to it, that is, the plants found in that quadrat. 
 
 You could find which plant species were found in a particular quadrat (e.g. 1751) with something like:
 
@@ -156,12 +156,12 @@ SELECT DISTINCT (species_name) FROM species
   JOIN quadrats ON records.quadrat_id = quadrats.quadrats_id
 WHERE quadrats_id = 1751;
 
-### Assemblies.
-Assemblies are the vegetative units that we sample. Sites and meadows (not available to "guest") record the location of our samples, but often it is found that one meadow may have several recognisable vegetative units in it. The constraint link between the sites and meadows tables in Figure 1 show this one-to-many relationship. Quadrats need to know which assembly they belong to, so the quadrats table entries each have an assembly_id which can be used to join the assemblies and quadrats tables on assemblies_id = assembly_id. Note the naming convention here, which we adhere to throughout: Parent items (assemblies) have a (plural) assemblies_id; child items (quadrats) have a (singular) assembly_id because each belongs to just one assembly.
+### Surveys.
+Assemblies are the vegetative units that we sample; one assembly is sampled on each survey. Sites and meadows record the location of our samples, but often it is found that one meadow may have several recognisable vegetative units in it. The constraint link between the sites and meadows tables in Figure 1 show this one-to-many relationship. Quadrats need to know which survey they belong to, so the quadrats table entries each have a survey_id which can be used to join the surveys and quadrats tables on surveys_id = survey_id. Note the naming convention here, which we adhere to throughout: Parent items (surveys) have a (plural) surveys_id; child items (quadrats) have a (singular) survey_id because each was part of a vegetative assembly that was sampled on a particular survey date.
 
-The assemblies table also records the quadrat count for the assembly, and the size of quadrat used to sample it. We use either 2mx2m or 4mx4m quadrats.
+The surveys table also records the quadrat count for the survey, and the size of quadrat used to sample it. We use either 2mx2m or 4mx4m quadrats.
 
-For each assembly, the team assign an NVC class by matching the NVC standards using MATCH software together with an understanding of general grassland ecology. The assessed NVC class is listed in the community column, and the top-level NVC community is in major_nvc_community.
+For each survey, the team assign an NVC class by matching the NVC standards using MATCH software together with an understanding of general grassland ecology. The assessed NVC class is listed in the community column, and the top-level NVC community is in major_nvc_community.
 
 ### mg_rodwell.
 This table contains mesotrophic grassland species frequencies listed in British Plant Communities vol 3, Grasslands and Montane Communities.
@@ -170,7 +170,7 @@ This table contains mesotrophic grassland species frequencies listed in British 
 For some analyses (specifically, the 2019 BES poster) we used a set of 22 species selected because each occurred with a frequency of V (0.8 - 1.0, mid-range 0.8) in at least one of the mesotrophic grassland standards of interest. The mg_stds_v table lists them.
 
 ## How the downloads could be used: examples.
-Some examples with R code available [here](Notebook.nb.html) and here:[Stellaria_etc](stellaria_etc.nb.html).
+Some examples with R code available [here](Notebook.nb.html) and here:[Stellaria_etc](stellaria_etc.html).
 
 An examination of meadow plant associations [here](https://zygodon.github.io/graphs/MeadowPlantAssociations_2.nb.html)
 

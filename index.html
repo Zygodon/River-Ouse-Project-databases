@@ -364,7 +364,7 @@ pre code {
 
 <h1 class="title toc-ignore">Meadows database</h1>
 <h4 class="author">John Pilkington</h4>
-<h4 class="date">26/05/2022</h4>
+<h4 class="date">6/06/2022</h4>
 
 </div>
 
@@ -387,7 +387,7 @@ App: Species Explorer</a></li>
 <li><a href="#records.">Records.</a></li>
 <li><a href="#species.">Species.</a></li>
 <li><a href="#quadrats.">Quadrats.</a></li>
-<li><a href="#assemblies.">Assemblies.</a></li>
+<li><a href="#surveys.">Surveys.</a></li>
 <li><a href="#mg_rodwell.">mg_rodwell.</a></li>
 <li><a href="#mg_stds_v.">mg_stds_v.</a></li>
 </ul></li>
@@ -445,7 +445,7 @@ mydb &lt;- dbConnect(MySQL(),
                    dbname=&quot;meadows&quot;,
                    port = 3306,
                    host   = &quot;sxouse.ddns.net&quot;)
-rs1 = dbSendQuery(mydb, &quot;select assembly_name, community from assemblies where community is not null;&quot;)
+rs1 = dbSendQuery(mydb, &quot;select assembly_name, community from surveys where community is not null;&quot;)
 data &lt;- fetch(rs1, n=10)
 dbDisconnect(mydb)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
@@ -464,13 +464,13 @@ dbDisconnect(mydb)</code></pre>
 <p>Or more complicated joins:</p>
 <pre class="r"><code>library(&quot;RMySQL&quot;)
 q &lt;- &quot;select assembly_name, community, count(distinct(species.species_id))
-from assemblies
-join quadrats on quadrats.assembly_id = assemblies_id
+from surveys
+join quadrats on quadrats.survey_id = surveys_id
 join records on records.quadrat_id = quadrats_id
 join species on species.species_id = records.species_id
 where community in (&#39;MG5a&#39;, &#39;MG5c&#39;, &#39;MG6a&#39;, &#39;MG6b&#39;)
 # and species.species_name = &#39;Lolium_perenne&#39;
-group by assemblies_id;&quot; 
+group by surveys_id;&quot; 
 
 mydb &lt;- dbConnect(MySQL(), 
                    user  = &quot;guest&quot;,
@@ -557,33 +557,34 @@ species.species_id WHERE records_id = 229;</p>
 <div id="quadrats." class="section level3">
 <h3>Quadrats.</h3>
 <p>The sampling unit for the project is a quadrat. Quadrats belong to
-assemblies (see next paragraph for a definition), identified by an
-assembly_id which points to the assembly to which the quadrat belongs.
-Every quadrat has a unique quadrat_id that can be used to find the
-records belonging to it, that is, the plants found in that quadrat.</p>
+surveys (see next paragraph for a definition), identified by an
+survey_id which points to the survey to which the quadrat belongs. Every
+quadrat has a unique quadrat_id that can be used to find the records
+belonging to it, that is, the plants found in that quadrat.</p>
 <p>You could find which plant species were found in a particular quadrat
 (e.g. 1751) with something like:</p>
 <p>SELECT DISTINCT (species_name) FROM species JOIN records ON
 records.species_id = species.species_id JOIN quadrats ON
 records.quadrat_id = quadrats.quadrats_id WHERE quadrats_id = 1751;</p>
 </div>
-<div id="assemblies." class="section level3">
-<h3>Assemblies.</h3>
-<p>Assemblies are the vegetative units that we sample. Sites and meadows
-(not available to “guest”) record the location of our samples, but often
-it is found that one meadow may have several recognisable vegetative
-units in it. The constraint link between the sites and meadows tables in
-Figure 1 show this one-to-many relationship. Quadrats need to know which
-assembly they belong to, so the quadrats table entries each have an
-assembly_id which can be used to join the assemblies and quadrats tables
-on assemblies_id = assembly_id. Note the naming convention here, which
-we adhere to throughout: Parent items (assemblies) have a (plural)
-assemblies_id; child items (quadrats) have a (singular) assembly_id
-because each belongs to just one assembly.</p>
-<p>The assemblies table also records the quadrat count for the assembly,
-and the size of quadrat used to sample it. We use either 2mx2m or 4mx4m
+<div id="surveys." class="section level3">
+<h3>Surveys.</h3>
+<p>Assemblies are the vegetative units that we sample; one assembly is
+sampled on each survey. Sites and meadows record the location of our
+samples, but often it is found that one meadow may have several
+recognisable vegetative units in it. The constraint link between the
+sites and meadows tables in Figure 1 show this one-to-many relationship.
+Quadrats need to know which survey they belong to, so the quadrats table
+entries each have a survey_id which can be used to join the surveys and
+quadrats tables on surveys_id = survey_id. Note the naming convention
+here, which we adhere to throughout: Parent items (surveys) have a
+(plural) surveys_id; child items (quadrats) have a (singular) survey_id
+because each was part of a vegetative assembly that was sampled on a
+particular survey date.</p>
+<p>The surveys table also records the quadrat count for the survey, and
+the size of quadrat used to sample it. We use either 2mx2m or 4mx4m
 quadrats.</p>
-<p>For each assembly, the team assign an NVC class by matching the NVC
+<p>For each survey, the team assign an NVC class by matching the NVC
 standards using MATCH software together with an understanding of general
 grassland ecology. The assessed NVC class is listed in the community
 column, and the top-level NVC community is in major_nvc_community.</p>
@@ -604,7 +605,7 @@ standards of interest. The mg_stds_v table lists them.</p>
 </div>
 <div id="how-the-downloads-could-be-used-examples." class="section level2">
 <h2>How the downloads could be used: examples.</h2>
-<p>Some examples with R code available <a href="Notebook.nb.html">here</a> and here:<a href="stellaria_etc.nb.html">Stellaria_etc</a>.</p>
+<p>Some examples with R code available <a href="Notebook.nb.html">here</a> and here:<a href="stellaria_etc.html">Stellaria_etc</a>.</p>
 <p>An examination of meadow plant associations <a href="https://zygodon.github.io/graphs/MeadowPlantAssociations_2.nb.html">here</a></p>
 </div>
 <div id="please-acknowlege-us." class="section level2">
