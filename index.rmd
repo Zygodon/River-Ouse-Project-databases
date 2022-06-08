@@ -126,7 +126,7 @@ For some analyses (specifically, the 2019 BES poster) we used a set of 22 specie
 ## How the downloads could be used: examples.
 Some examples with R code available here: [Comparison with NVC standard counts](https://github.com/Zygodon/Meadows_DB_notebooks/NVC-standards_comparison.html) and here:[Stellaria_etc](https://github.com/Zygodon/Meadows_DB_notebooks/stellaria_etc.html).
 
-[Some examples with R code](https://zygodon.github.io/meadows_DB_notebooks/)
+[Some examples with R code](https://zygodon.github.io/meadows_DB_notebooks/NVC-standards_comparison)
 
 ## Please acknowlege us.
 The material on these pages and the data available to user "guest" are covered by the [GNU General Public License](LICENSE.txt). If you use our data in your teaching or research, please acknowlege that by citing the River Ouse Project, University of Sussex, and referring to our website, [www.sussex.ac.uk/riverouse/](http://www.sussex.ac.uk/riverouse/).
