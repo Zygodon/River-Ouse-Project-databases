@@ -75,6 +75,7 @@ The species table is a list of all the plant species found during the course of 
 The sampling units for the project are 30m lengths of stream, extending approximately 10m to each side. lengths belong to gills, identified by an gill_id which points to the gill to which the length belongs. Every length has a unique length_id that can be used to find the records belonging to it, that is, the plants found in that length. 
 
 ### Gills (table).
+** WORK IN PROGRESS **
 
 ## How the downloads could be used: examples.
 No examples yet
