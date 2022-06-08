@@ -27,7 +27,7 @@ My objective here is to make the databases publicly available, and to develop re
 Access to the meadows database [here](https://zygodon.github.io/River-Ouse-Project-databases/Meadows_DB_notebook.html)
 
 ## The gills database.
-Access to the gills database coming soon ...
+Access to the gills database [here](https://zygodon.github.io/River-Ouse-Project-databases/Gills_DB_intro.html)
 
 ## Please acknowlege us.
 The material on these pages and the data available to user "guest" are covered by the [GNU General Public License](LICENSE.txt). If you use our data in your teaching or research, please acknowlege that by citing the River Ouse Project, University of Sussex, and referring to our website, [www.sussex.ac.uk/riverouse/](http://www.sussex.ac.uk/riverouse/).
